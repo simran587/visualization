@@ -9,8 +9,11 @@ from __future__ import annotations
 
 from dataclasses import dataclass
 
-_CATEGORICAL_LIGHT = ("#2a78d6", "#eb6834", "#1baf7a", "#eda100", "#e87ba4", "#008300", "#4a3aa7", "#e34948")
-_CATEGORICAL_DARK = ("#3987e5", "#d95926", "#199e70", "#c98500", "#d55181", "#008300", "#9085e9", "#e66767")
+# Fun, vibrant "candy / tropical" palette. Deliberately no red-next-to-green
+# pairing (no Christmas vibe): the warm slots are mango/yellow/pink, the cool
+# slots are blue/teal/aqua, kept apart in the ordering.
+_CATEGORICAL_LIGHT = ("#3b9dff", "#ff8c42", "#12b5b0", "#ffcc33", "#ff5d8f", "#22c1a6", "#9c6bff", "#5ad1e6")
+_CATEGORICAL_DARK = ("#4dabf7", "#ff9f57", "#22c9c3", "#ffd43b", "#ff7aa6", "#3ad6b4", "#b39cff", "#6fdcef")
 
 
 @dataclass(frozen=True)
@@ -45,15 +48,15 @@ class Theme:
 
 
 LIGHT = Theme(
-    name="light", surface="#fcfcfb", accent="#2a78d6", muted="#c4c2ba",
-    text_primary="#141414", text_secondary="#4c4b47", axis_label="#7a7973",
-    grid="#ecece6", axis="#c9c8bf", categorical=_CATEGORICAL_LIGHT,
+    name="light", surface="#fcfcfd", accent="#7c3aed", muted="#c6c4cf",
+    text_primary="#17161f", text_secondary="#4d4b58", axis_label="#84828e",
+    grid="#eceaf4", axis="#d0cdda", categorical=_CATEGORICAL_LIGHT,
 )
 
 DARK = Theme(
-    name="dark", surface="#161620", accent="#4f9bf0", muted="#565564",
-    text_primary="#f4f5fa", text_secondary="#bdbdcb", axis_label="#8a8a99",
-    grid="#282836", axis="#3a3a4a", categorical=_CATEGORICAL_DARK,
+    name="dark", surface="#17151f", accent="#a78bfa", muted="#575563",
+    text_primary="#f3f1f8", text_secondary="#c0bccd", axis_label="#8a8798",
+    grid="#2a2735", axis="#3d3a4a", categorical=_CATEGORICAL_DARK,
 )
 
 _THEMES = {"light": LIGHT, "dark": DARK}

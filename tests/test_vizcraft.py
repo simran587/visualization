@@ -125,7 +125,8 @@ def test_nice_ticks_span():
 
 
 def test_palette_fixed_order_and_limit():
-    assert vc.LIGHT.color(0) == "#2a78d6"
+    assert vc.LIGHT.color(0) == "#3b9dff"      # first slot of the fun palette
+    assert vc.LIGHT.color(0) != vc.LIGHT.color(1)
     with pytest.raises(IndexError):
         vc.LIGHT.color(8)
 
