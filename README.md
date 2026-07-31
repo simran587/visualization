@@ -15,8 +15,35 @@ Five chart types, **deliberately no pie, heatmap, or table**:
 | `dumbbell_chart` | a low→high range (or before/after gap) per category |
 | `beeswarm_chart` | a value distribution as non-overlapping dots |
 
-Every chart uses a colorblind-safe palette, one **accent** color for emphasis
+Every chart uses a bright, fun palette, one **accent** color for emphasis
 with **muted** gray for the rest, and works in `light` or `dark` themes.
+
+## Gallery
+
+All rendered from the bundled `tallest_buildings.csv`.
+
+### Lollipop — the 15 tallest buildings
+![Lollipop chart of the 15 tallest buildings](docs/charts/lollipop_tallest.png)
+
+### Radial bar — a skyline in the round
+![Radial bar chart of the 14 tallest buildings](docs/charts/radial_tallest.png)
+
+### Bubble — year vs height, size = floors, color = use type
+![Bubble chart of year completed versus height](docs/charts/bubble_year_height.png)
+
+### Dumbbell — each country's shortest-to-tallest range
+![Dumbbell chart of building height range per country](docs/charts/dumbbell_country_range.png)
+
+### Beeswarm — the height distribution, dot by dot
+![Beeswarm plot of building heights](docs/charts/beeswarm_heights.png)
+
+### Dark theme
+Every chart supports `theme="dark"`:
+
+![Lollipop chart in dark theme](docs/charts/lollipop_tallest_dark.png)
+
+> These images live in [`docs/charts/`](docs/charts) and are regenerated from
+> the SVGs produced by `python examples/gallery.py`.
 
 ## Installation
 
