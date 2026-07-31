@@ -3,16 +3,23 @@ requires = ["hatchling"]
 build-backend = "hatchling.build"
 
 [project]
-name = "simple-eda"
+name = "vizcraft"
 version = "0.1.0"
-description = "A simple exploratory data analysis project"
+description = "A zero-dependency library of creative SVG charts (lollipop, radial bar, bubble, dumbbell, beeswarm)"
 readme = "README.md"
 requires-python = ">=3.9"
 license = { file = "LICENSE" }
 authors = [
     { name = "simran587" },
 ]
+keywords = ["visualization", "charts", "svg", "dataviz", "lollipop", "beeswarm", "bubble"]
 dependencies = []
 
+[project.optional-dependencies]
+dev = ["pytest>=7"]
+
 [tool.hatch.build.targets.wheel]
-packages = ["src/simple_eda"]
+packages = ["src/vizcraft"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
