@@ -12,7 +12,7 @@ Five chart types, **deliberately no pie, heatmap, or table**:
 | `lollipop_chart` | ranked magnitude — a lighter-weight bar chart |
 | `radial_bar_chart` | magnitude fanned around a circle ("a skyline in the round") |
 | `bubble_chart` | three–four numerics at once: x, y, bubble size, and color |
-| `dumbbell_chart` | a low→high range (or before/after gap) per category |
+| `dumbbell_chart` | a low→high range per category, drawn as a windowed tower |
 | `beeswarm_chart` | a value distribution as non-overlapping dots |
 
 Every chart uses a bright, fun palette, one **accent** color for emphasis
@@ -31,8 +31,11 @@ All rendered from the bundled `tallest_buildings.csv`.
 ### Bubble — year vs height, size = floors, color = use type
 ![Bubble chart of year completed versus height](docs/charts/bubble_year_height.png)
 
-### Dumbbell — each country's shortest-to-tallest range
-![Dumbbell chart of building height range per country](docs/charts/dumbbell_country_range.png)
+### Building range — each country's shortest-to-tallest, as towers
+The vertical axis is height; each connector is drawn as a windowed building
+spanning that country's shortest to tallest structure.
+
+![Vertical range chart where each country's height range is a windowed tower](docs/charts/dumbbell_country_range.png)
 
 ### Beeswarm — the height distribution, dot by dot
 ![Beeswarm plot of building heights](docs/charts/beeswarm_heights.png)

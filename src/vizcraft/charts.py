@@ -221,44 +221,68 @@ def bubble_chart(
 
 def dumbbell_chart(
     categories: Sequence, low: Sequence[float], high: Sequence[float], *,
-    low_label="low", high_label="high", title=None, subtitle=None,
-    unit="", decimals=None, width=800, height=None, theme="light",
+    low_label="shortest", high_label="tallest", title=None, subtitle=None,
+    unit="", decimals=None, width=None, height=560, theme="light",
 ) -> SVG:
-    """Dumbbell chart: a connecting bar between a ``low`` and ``high`` dot for
-    each category -- ideal for showing a range or a before/after gap."""
+    """Vertical range chart where each connector is drawn as a *building*.
+
+    The value axis runs vertically; each category is a column, and the range
+    from ``low`` to ``high`` is rendered as a little windowed tower whose base
+    sits at the shortest value and whose roof reaches the tallest. Buildings are
+    colored per category from the palette.
+    """
     theme = get_theme(theme)
     if not (len(categories) == len(low) == len(high)):
         raise ValueError("categories, low and high must be the same length")
     n = len(categories)
-    top, bottom_pad, row_h = 104, 46, 34
-    if height is None:
-        height = top + n * row_h + bottom_pad
-    left = min(260, max(90, 8 * max((len(str(c)) for c in categories), default=8)))
-    right = width - 70
+    left, right_pad, col_w = 66, 26, 132
+    if width is None:
+        width = left + right_pad + n * col_w
+    top, bottom = 108, 62
+    plot_bottom, plot_top, plot_right = height - bottom, top, width - right_pad
 
-    svg = SVG(width, height, background=theme.surface, title=title or "Dumbbell chart")
+    svg = SVG(width, height, background=theme.surface, title=title or "Building range chart")
     _header(svg, theme, title, subtitle)
-    _legend(svg, theme, [(low_label, theme.muted), (high_label, theme.accent)], left, 78)
+    # Caption explaining the tower ends (keeps low_label/high_label meaningful).
+    svg.text(_TITLE_X, 82, f"each tower spans a country's {low_label} → {high_label} building",
+             font_size=12.5, fill=theme.axis_label, text_anchor="start")
 
-    lo_all = min(low) if low else 0
-    hi_all = max(high) if high else 1
-    x = LinearScale(min(0, lo_all), hi_all, left, right)
-    band = BandScale(range(n), top, height - bottom_pad, padding=0.42)
-    for t in x.ticks(5):
-        tx = x(t)
-        svg.line(tx, top, tx, height - bottom_pad, stroke=theme.grid, stroke_width=1)
-        svg.text(tx, height - bottom_pad + 18, _format_number(t), font_size=11, fill=theme.axis_label, text_anchor="middle")
+    y = LinearScale(0, max(high) if high else 1, plot_bottom, plot_top)
+    band = BandScale(range(n), left, plot_right, padding=0.34)
+    for t in y.ticks(5):
+        ty = y(t)
+        if ty < plot_top - 1 or ty > plot_bottom + 1:
+            continue  # skip ticks that fall outside the plot area
+        svg.line(left, ty, plot_right, ty, stroke=theme.grid, stroke_width=1)
+        svg.text(left - 10, ty + 4, _format_number(t), font_size=11, fill=theme.axis_label, text_anchor="end")
 
     for i, (cat, lo, hi) in enumerate(zip(categories, low, high)):
-        cy = band.center(i)
-        svg.line(x(lo), cy, x(hi), cy, stroke=theme.axis, stroke_width=3, stroke_linecap="round")
-        svg.circle(x(lo), cy, 6.5, fill=theme.muted, stroke=theme.surface, stroke_width=1.5)
-        svg.circle(x(hi), cy, 6.5, fill=theme.accent, stroke=theme.surface, stroke_width=1.5)
-        svg.text(left - 10, cy + 4, str(cat), font_size=12.5, fill=theme.text_secondary, text_anchor="end")
-        if hi != lo:
-            svg.text(x(hi) + 12, cy + 4, f"{_format_number(hi, decimals)}{unit}",
-                     font_size=11, font_weight="600", fill=theme.text_primary, text_anchor="start")
-    svg.line(left, top, left, height - bottom_pad, stroke=theme.axis, stroke_width=1.5)
+        cx = band.center(i)
+        bw = min(78, band.bandwidth)
+        x0 = cx - bw / 2
+        yt, yb = y(hi), y(lo)
+        color = theme.color(i)
+        # Tower body spanning the shortest -> tallest range.
+        svg.rect(x0, yt, bw, max(1.0, yb - yt), rx=3, fill=color)
+        # Window rows (thin surface-colored lines) and a central mullion.
+        floor, yy = 10, yt + 9
+        while yy < yb - 2:
+            svg.line(x0 + 3, yy, x0 + bw - 3, yy, stroke=theme.surface, stroke_width=1, stroke_opacity=0.42)
+            yy += floor
+        if yb - yt > 14:
+            svg.line(cx, yt + 3, cx, yb - 3, stroke=theme.surface, stroke_width=1, stroke_opacity=0.32)
+        # Rooftop antenna and a peak marker at the tallest value.
+        svg.line(cx, yt, cx, yt - 13, stroke=color, stroke_width=2)
+        svg.circle(cx, yt - 13, 2.6, fill=color)
+        # Value labels: tallest above the roof, shortest at the base.
+        svg.text(cx, yt - 20, f"{_format_number(hi, decimals)}{unit}",
+                 font_size=11.5, font_weight="600", fill=theme.text_primary, text_anchor="middle")
+        svg.text(cx, yb + 15, f"{_format_number(lo, decimals)}{unit}",
+                 font_size=10.5, fill=theme.text_secondary, text_anchor="middle")
+        # Category (country) label under the ground axis.
+        svg.text(cx, plot_bottom + 20, str(cat), font_size=12, fill=theme.text_secondary, text_anchor="middle")
+
+    svg.line(left, plot_bottom, plot_right, plot_bottom, stroke=theme.axis, stroke_width=1.5)
     return svg
 
 
