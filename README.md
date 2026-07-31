@@ -9,7 +9,7 @@ Five chart types, **deliberately no pie, heatmap, or table**:
 
 | Function | What it's for |
 |---|---|
-| `lollipop_chart` | ranked magnitude — a lighter-weight bar chart |
+| `lollipop_chart` | ranked magnitude, each value drawn as a horizontal skyscraper |
 | `radial_bar_chart` | magnitude fanned around a circle ("a skyline in the round") |
 | `bubble_chart` | three–four numerics at once: x, y, bubble size, and color |
 | `dumbbell_chart` | a low→high range per category, drawn as a windowed tower |
@@ -22,8 +22,11 @@ with **muted** gray for the rest, and works in `light` or `dark` themes.
 
 All rendered from the bundled `tallest_buildings.csv`.
 
-### Lollipop — the 15 tallest buildings
-![Lollipop chart of the 15 tallest buildings](docs/charts/lollipop_tallest.png)
+### Skyscrapers — the 15 tallest buildings
+Each value is drawn as a building laid on its side: a windowed tower growing
+from the baseline to its height, capped with a rooftop antenna.
+
+![The 15 tallest buildings, each drawn as a horizontal windowed tower](docs/charts/lollipop_tallest.png)
 
 ### Radial bar — a skyline in the round
 ![Radial bar chart of the 14 tallest buildings](docs/charts/radial_tallest.png)
