@@ -25,6 +25,7 @@ Public API:
 from __future__ import annotations
 
 from .charts import (
+    bar_chart,
     beeswarm_chart,
     bubble_chart,
     dumbbell_chart,
@@ -43,6 +44,7 @@ __all__ = [
     "load_tallest_buildings",
     "skyline_chart",
     "lollipop_chart",
+    "bar_chart",
     "radial_bar_chart",
     "bubble_chart",
     "dumbbell_chart",

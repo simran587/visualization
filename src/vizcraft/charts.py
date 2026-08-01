@@ -124,6 +124,54 @@ def skyline_chart(
 lollipop_chart = skyline_chart
 
 
+def bar_chart(
+    labels: Sequence, values: Sequence[float], *,
+    title=None, subtitle=None, highlight=None, unit="", decimals=None,
+    width=780, height=None, theme="light",
+) -> SVG:
+    """A straight horizontal bar chart -- the checklist-ideal form for ranked
+    magnitude: bars start at zero (ruler-accurate), category names read left to
+    right, values are labeled directly, and ``highlight`` paints one bar in the
+    accent while the rest recede to a neutral slate.
+    """
+    theme = get_theme(theme)
+    if len(labels) != len(values):
+        raise ValueError("labels and values must be the same length")
+    n = len(labels)
+    top, bottom_pad, row_h = 84, 46, 30
+    if height is None:
+        height = top + n * row_h + bottom_pad
+    left = min(300, max(90, 8 * max((len(str(l)) for l in labels), default=8)))
+    right = width - 92
+    hi = _resolve_highlight(highlight, labels)
+
+    svg = SVG(width, height, background=theme.surface, title=title or "Bar chart")
+    _header(svg, theme, title, subtitle)
+
+    x = LinearScale(0, max(values) if values else 1, left, right)
+    band = BandScale(range(n), top, height - bottom_pad, padding=0.34)
+    # Muted vertical gridlines with value ticks along the bottom.
+    for t in x.ticks(5):
+        tx = x(t)
+        svg.line(tx, top, tx, height - bottom_pad, stroke=theme.grid, stroke_width=1)
+        svg.text(tx, height - bottom_pad + 18, _format_number(t), font_size=11,
+                 fill=theme.axis_label, text_anchor="middle")
+
+    slate = theme.text_secondary
+    for i, (label, value) in enumerate(zip(labels, values)):
+        by = band.position(i)
+        bw = max(1.0, x(value) - left)
+        color = theme.accent if (hi is None or i == hi) else slate
+        svg.rect(left, by, bw, band.bandwidth, rx=3, fill=color)
+        svg.text(left - 10, by + band.bandwidth / 2 + 4, str(label),
+                 font_size=12.5, fill=theme.text_secondary, text_anchor="end")
+        svg.text(x(value) + 8, by + band.bandwidth / 2 + 4, f"{_format_number(value, decimals)}{unit}",
+                 font_size=11.5, font_weight="600", fill=theme.text_primary, text_anchor="start")
+
+    svg.line(left, top, left, height - bottom_pad, stroke=theme.axis, stroke_width=1.5)
+    return svg
+
+
 def radial_bar_chart(
     labels: Sequence, values: Sequence[float], *,
     title=None, subtitle=None, highlight=None, unit="", decimals=None,

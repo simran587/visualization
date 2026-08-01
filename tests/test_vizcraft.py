@@ -69,6 +69,14 @@ def test_lollipop_alias_points_to_skyline():
     assert vc.lollipop_chart is vc.skyline_chart
 
 
+def test_bar_chart_wellformed_and_highlight():
+    svg = vc.bar_chart(["A", "B", "C"], [300, 500, 400], title="t", highlight="B", unit=" m")
+    text = _wellformed(svg)
+    assert "500 m" in text and "<rect" in text
+    # highlighted bar uses the accent; others use the slate/secondary ink
+    assert vc.LIGHT.accent in text
+
+
 def test_radial_bar_wellformed():
     svg = vc.radial_bar_chart(["A", "B", "C", "D"], [1, 2, 3, 4], title="t", highlight=0)
     text = _wellformed(svg)

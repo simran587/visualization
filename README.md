@@ -5,15 +5,16 @@ don't get out of the box. No matplotlib, no pandas, no compiled extensions:
 pure standard-library Python that emits portable SVG. Ships with the
 tallest-buildings dataset so you can render something interesting immediately.
 
-Five chart types, **deliberately no pie, heatmap, or table**:
+Chart types, **deliberately no pie, heatmap, or table**:
 
 | Function | What it's for |
 |---|---|
 | `skyline_chart` | a to-scale skyline where each value is its own recognizable building silhouette (also aliased `lollipop_chart`) |
-| `radial_bar_chart` | magnitude fanned around a circle ("a skyline in the round") |
+| `bar_chart` | a straight, checklist-ideal horizontal bar chart for ranked magnitude |
 | `bubble_chart` | three–four numerics at once: x, y, bubble size, and color |
 | `dumbbell_chart` | a low→high range per category, drawn as a windowed tower |
 | `beeswarm_chart` | a value distribution as non-overlapping dots |
+| `radial_bar_chart` | magnitude fanned around a circle (available, but see the checklist audit) |
 
 Every chart uses a bright, fun palette, one **accent** color for emphasis
 with **muted** gray for the rest, and works in `light` or `dark` themes.
@@ -30,8 +31,13 @@ aperture, the Abraj clock face, Central Park's pencil slab, and more.
 
 ![The 15 tallest buildings as recognizable to-scale silhouettes](docs/charts/lollipop_tallest.png)
 
-### Radial bar — a skyline in the round
-![Radial bar chart of the 14 tallest buildings](docs/charts/radial_tallest.png)
+### Bar — the 14 tallest, ranked
+A straight horizontal bar chart: bars start at zero, names read left to right,
+values are labeled directly, and Burj Khalifa is highlighted. This is the
+checklist-ideal form for "which is tallest" (it scores a full 48/48 in the
+[checklist audit](docs/CHECKLIST_AUDIT.md)).
+
+![Horizontal bar chart of the 14 tallest buildings, Burj Khalifa highlighted](docs/charts/bar_tallest.png)
 
 ### Bubble — year vs height, size = floors, color = use type
 ![Bubble chart of year completed versus height](docs/charts/bubble_year_height.png)
@@ -102,11 +108,11 @@ The tiny `Dataset` helper covers what the charts need: `column`, `unique`,
 import vizcraft as vc
 data = vc.load_tallest_buildings()
 
-# Radial bars — the 14 tallest fanned around a circle
+# Straight bar chart — the 14 tallest, ranked
 top14 = data.top("height_m", 14)
-vc.radial_bar_chart(top14.column("building"), top14.column("height_m"),
-                    highlight="Burj Khalifa", unit=" m",
-                    title="A skyline in the round").save("radial.svg")
+vc.bar_chart(top14.column("building"), top14.column("height_m"),
+             highlight="Burj Khalifa", unit=" m",
+             title="Burj Khalifa outreaches the next thirteen giants").save("bar.svg")
 
 # Bubble — year vs height, bubble size = floors, color = use type
 b = data.dropna("floors")
@@ -159,7 +165,8 @@ Pass `theme="light"` (default) or `theme="dark"` to any chart, or a custom
 visualization/
 ├── src/vizcraft/
 │   ├── __init__.py         # public API
-│   ├── charts.py           # lollipop / radial bar / bubble / dumbbell / beeswarm
+│   ├── charts.py           # skyline / bar / bubble / dumbbell / beeswarm / radial
+│   ├── buildings.py        # recognizable building silhouettes for the skyline
 │   ├── dataset.py          # Dataset + load_tallest_buildings()
 │   ├── palette.py          # colorblind-safe light & dark themes
 │   ├── scales.py           # linear + band scales, nice ticks

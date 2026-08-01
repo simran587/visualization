@@ -31,12 +31,12 @@ def main(out_dir: Path) -> None:
         highlight="Burj Khalifa", unit=" m",
     )))
 
-    # 2. Radial bar -- top 14 fanned around a circle.
+    # 2. Bar -- the checklist-ideal straight bar of the 14 tallest.
     top14 = data.top("height_m", 14)
-    charts.append(("radial_tallest", vc.radial_bar_chart(
+    charts.append(("bar_tallest", vc.bar_chart(
         top14.column("building"), top14.column("height_m"),
         title="Burj Khalifa outreaches the next thirteen giants",
-        subtitle="The 14 tallest buildings, height in metres, fanned around a dial",
+        subtitle="The 14 tallest buildings, height in metres",
         highlight="Burj Khalifa", unit=" m",
     )))
 
