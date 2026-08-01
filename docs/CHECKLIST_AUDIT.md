@@ -20,8 +20,8 @@ Charts audited (from `examples/gallery.py`): **Skyline**, **Bar**, **Bubble**,
 | **A9** | Graph is 2-D | 2 | 2 | 2 | 2 | 2 |
 | **A10** | Display is free from decoration | 2 | 2 | 2 | 2 | 2 |
 | **C11** | Color scheme is intentional | 2 | 2 | 2 | 2 | 2 |
-| **C12** | Color highlights the key pattern | 2 | 2 | **1** | **1** | **1** |
-| **C13** | Color is legible in black & white | 2 | 2 | **1** | **1** | **1** |
+| **C12** | Color highlights the key pattern | 2 | 2 | 2 | 2 | 2 |
+| **C13** | Color is legible in black & white | 2 | 2 | 2 | 2 | 2 |
 | **C14** | Color is legible for colorblindness | 2 | 2 | 2 | 2 | 2 |
 | **C15** | Text sufficiently contrasts background | 2 | 2 | 2 | 2 | 2 |
 | **L16** | Gridlines, if present, are muted | 2 | 2 | 2 | 2 | 2 |
@@ -33,40 +33,41 @@ Charts audited (from `examples/gallery.py`): **Skyline**, **Bar**, **Bubble**,
 | **O22** | Appropriate level of precision | 2 | 2 | 2 | 2 | 2 |
 | **O23** | Contextual / comparison data present | 2 | 2 | 2 | 2 | 2 |
 | **O24** | Elements reinforce the takeaway | 2 | 2 | 2 | 2 | 2 |
-| | **Score** | **48/48** | **48/48** | **44/48** | **44/48** | **44/48** |
+| | **Score** | **48/48** | **48/48** | **48/48** | **48/48** | **48/48** |
 
-## What was changed to raise scores
+**All five charts score a full 48/48.**
 
-- **Swapped the radial dial for a straight `bar_chart`.** A radial bar's length
-  can't be ruler-verified and a dial isn't the clearest form for "which is
-  tallest," which cost the old radial **A6** and **O21**. The straight bar starts
-  at zero, labels every value, and highlights Burj Khalifa — a full **48/48**.
-  (`radial_bar_chart` is still in the library if you want the circular look.)
-- **Colorblind-safe palette (C14 = 2 everywhere).** Validated (worst adjacent
-  CVD ΔE ≈ 11.9); the gold was deepened to `#d99a00` so it stays in the
-  lightness band and does not wash out.
-- **Direct labels (T4 = 2).** Notable bubbles (Burj Khalifa, Central Park Tower,
-  Willis Tower) are labeled on the plot.
-- **Takeaway titles (T1 / O20 = 2).** Every title states the finding in 6–12
-  words, left-justified in the corner.
+## How each guideline is met
 
-## The remaining 1s — a deliberate choice
+- **Text (T1–T5).** Every title is a 6–12 word takeaway, left-justified in the
+  corner, over a supporting subtitle. Text sizes are hierarchical (title >
+  subtitle > labels). Data are labeled directly — bar/tower values, the two
+  beeswarm outliers, and notable bubbles — and labels are kept sparse.
+- **Arrangement (A6–A10).** Bars, towers and dots sit on a zero baseline so
+  lengths/positions are ruler-accurate; bubble *area* encodes floors. Data are
+  ordered by value, axis intervals are equidistant, every chart is 2-D, and
+  there is no chartjunk.
+- **Color (C11–C15).** Each chart uses a **focus palette**: one accent color
+  highlights the key pattern (Burj Khalifa, China, mixed-use, the UAE, the two
+  outliers) while everything else is a neutral gray — so the emphasis is clear
+  (C12) and the two tones stay distinct in black & white (C13). The palette is
+  validated colorblind-safe (C14), and all text is high-contrast (C15).
+- **Lines (L16–L19).** Gridlines are faint, there is no border, there are no
+  redundant tick marks, and no chart uses a second/dual axis.
+- **Overall (O20–O24).** Each title states the finding, the chart type suits the
+  data (ranked magnitude → bar / skyline; a relationship → bubble; a range →
+  towers; a distribution → beeswarm), precision is appropriate, and every chart
+  compares many buildings/countries so the numbers have context.
 
-The Bubble, Range, and Beeswarm charts color **by category** (use type /
-country) using the bright multi-hue palette — kept on purpose. The checklist
-instead rewards using **one** accent color to highlight the key pattern and
-graying out the rest (**C12**), and warns that several equally-bright hues blur
-together in black & white (**C13**). Both are mitigated here by direct labels
-and the legend, but they remain **1s** as long as color encodes a category.
+## What changed to get here
 
-- **To turn them into 2s:** recolor those three with a *focus* palette — one
-  accent + neutral grays — which would sacrifice the multi-color look. This was
-  considered and declined in favor of the brighter design.
-
-## Bottom line
-
-**Skyline and Bar both score a full 48/48.** Bubble, Range, and Beeswarm sit at
-**44/48**, held back only by the intentional choice to keep the fun categorical
-colors (C12 / C13). Everything else — titles, direct labels, proportions,
-ordering, muted gridlines, no borders, colorblind-safety, precision, and
-comparison context — is at full marks across all five charts.
+- **Focus palette** on the Bubble, Range, and Beeswarm charts (one accent + gray)
+  — raises C12 and C13 from 1 → 2.
+- **Bar chart repurposed** to *buildings per country* (a different question from
+  the Skyline) with China highlighted.
+- **Radial dial replaced** by the straight bar earlier (radial couldn't earn A6
+  proportions or O21 type-appropriateness). `radial_bar_chart` remains in the
+  library for anyone who wants the circular look — it is simply not in the
+  audited gallery.
+- **Fixed** the Range chart's tallest-tower label overlapping the caption (added
+  headroom), and deepened the palette's gold so it stays legible.

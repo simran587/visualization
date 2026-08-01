@@ -31,28 +31,30 @@ def main(out_dir: Path) -> None:
         highlight="Burj Khalifa", unit=" m",
     )))
 
-    # 2. Bar -- the checklist-ideal straight bar of the 14 tallest.
-    top14 = data.top("height_m", 14)
-    charts.append(("bar_tallest", vc.bar_chart(
-        top14.column("building"), top14.column("height_m"),
-        title="Burj Khalifa outreaches the next thirteen giants",
-        subtitle="The 14 tallest buildings, height in metres",
-        highlight="Burj Khalifa", unit=" m",
+    # 2. Bar -- a different question: how many of the top 31 each country has.
+    counts = [(country, len(ds)) for country, ds in data.groups("country").items()]
+    counts.sort(key=lambda kv: kv[1], reverse=True)
+    counts = counts[:8]
+    charts.append(("bar_by_country", vc.bar_chart(
+        [c for c, _ in counts], [n for _, n in counts],
+        title="China holds more of the world's tallest than anywhere else",
+        subtitle="Number of buildings among the 31 tallest, by country",
+        highlight="China",
     )))
 
-    # 3. Bubble -- year vs height, size = floors, color = use type.
+    # 3. Bubble -- year vs height, size = floors; focus on mixed-use towers.
     b = data.dropna("floors")
     charts.append(("bubble_year_height", vc.bubble_chart(
         b.column("year_completed"), b.column("height_m"), b.column("floors"),
-        groups=b.column("use_type"), labels=b.column("building"),
+        groups=b.column("use_type"), highlight_group="mixed-use", labels=b.column("building"),
         annotate=["Burj Khalifa", "Central Park Tower", "Willis Tower (Sears Tower)"],
         x_label="Year completed", y_label="Height (metres)", size_label="floors",
         x_tick_format=lambda v: str(int(v)),  # years, not comma-grouped
-        title="The tallest buildings are taller, busier, and newer",
-        subtitle="Each bubble is a building; larger = more floors · colored by use type",
+        title="The very tallest towers are almost all mixed-use",
+        subtitle="Each bubble is a building; larger = more floors · mixed-use in purple",
     )))
 
-    # 4. Dumbbell -- shortest-to-tallest range per country (>=2 buildings).
+    # 4. Dumbbell -- shortest-to-tallest range per country; focus on the UAE.
     cats, lo, hi = [], [], []
     for country, ds in data.groups("country").items():
         heights = ds.column("height_m")
@@ -61,27 +63,19 @@ def main(out_dir: Path) -> None:
     order = sorted(range(len(cats)), key=lambda i: hi[i], reverse=True)
     charts.append(("dumbbell_country_range", vc.dumbbell_chart(
         [cats[i] for i in order], [lo[i] for i in order], [hi[i] for i in order],
-        low_label="shortest", high_label="tallest",
+        low_label="shortest", high_label="tallest", highlight="United Arab Emirates",
         title="The UAE spans the widest range of any country here",
         subtitle="Shortest to tallest building per country, in metres", unit=" m",
     )))
 
-    # 5. Beeswarm -- the height distribution, tallest few named.
+    # 5. Beeswarm -- the height distribution; single hue, tallest few named.
     charts.append(("beeswarm_heights", vc.beeswarm_chart(
-        data.column("height_m"), groups=data.column("use_type"),
+        data.column("height_m"),
         labels=data.column("building"),
         highlight_labels=["Burj Khalifa", "Merdeka 118"],
         x_label="Height (metres)",
         title="Most of these cluster between 300 and 550 metres",
-        subtitle="One dot per building, colored by use type",
-    )))
-
-    # 6. Dark-mode skyline (night silhouettes).
-    charts.append(("lollipop_tallest_dark", vc.skyline_chart(
-        top15.column("building"), top15.column("height_m"),
-        title="The 15 tallest buildings on Earth, at night",
-        subtitle="Each drawn as its own silhouette · height in metres",
-        highlight="Burj Khalifa", unit=" m", theme="dark",
+        subtitle="One dot per building; the two outliers are named",
     )))
 
     names = []

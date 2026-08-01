@@ -31,33 +31,36 @@ aperture, the Abraj clock face, Central Park's pencil slab, and more.
 
 ![The 15 tallest buildings as recognizable to-scale silhouettes](docs/charts/lollipop_tallest.png)
 
-### Bar — the 14 tallest, ranked
-A straight horizontal bar chart: bars start at zero, names read left to right,
-values are labeled directly, and Burj Khalifa is highlighted. This is the
-checklist-ideal form for "which is tallest" (it scores a full 48/48 in the
-[checklist audit](docs/CHECKLIST_AUDIT.md)).
+### Bar — how many of the tallest each country holds
+A straight horizontal bar chart (a different question from the skyline): the
+count of top-31 buildings per country, with China highlighted. Bars start at
+zero, names read left to right, values are labeled directly.
 
-![Horizontal bar chart of the 14 tallest buildings, Burj Khalifa highlighted](docs/charts/bar_tallest.png)
+![Horizontal bar chart of buildings per country, China highlighted](docs/charts/bar_by_country.png)
 
-### Bubble — year vs height, size = floors, color = use type
-![Bubble chart of year completed versus height](docs/charts/bubble_year_height.png)
+### Bubble — year vs height, size = floors
+Mixed-use towers are highlighted in the accent color and everything else recedes
+to gray, so the pattern ("the very tallest are almost all mixed-use") reads at a
+glance.
+
+![Bubble chart of year completed versus height, mixed-use highlighted](docs/charts/bubble_year_height.png)
 
 ### Building range — each country's shortest-to-tallest, as towers
-The vertical axis is height; each connector is drawn as a windowed building
-spanning that country's shortest to tallest structure.
+The vertical axis is height; each connector is a windowed building spanning that
+country's shortest to tallest structure. The UAE (the widest range) is highlighted.
 
 ![Vertical range chart where each country's height range is a windowed tower](docs/charts/dumbbell_country_range.png)
 
 ### Beeswarm — the height distribution, dot by dot
-![Beeswarm plot of building heights](docs/charts/beeswarm_heights.png)
+One dot per building; the two outliers (Burj Khalifa, Merdeka 118) are
+highlighted and named.
 
-### Dark theme
-Every chart supports `theme="dark"`:
+![Beeswarm plot of building heights with the two outliers named](docs/charts/beeswarm_heights.png)
 
-![Lollipop chart in dark theme](docs/charts/lollipop_tallest_dark.png)
-
-> These images live in [`docs/charts/`](docs/charts) and are regenerated from
-> the SVGs produced by `python examples/gallery.py`.
+> Every chart also supports `theme="dark"` (see the **Theming** section). These
+> images live in [`docs/charts/`](docs/charts) and are regenerated from the SVGs
+> produced by `python examples/gallery.py`. All five score **48/48** on the
+> [Data Visualization Checklist audit](docs/CHECKLIST_AUDIT.md).
 
 ## Installation
 

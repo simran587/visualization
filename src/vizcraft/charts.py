@@ -235,7 +235,7 @@ def radial_bar_chart(
 
 def bubble_chart(
     x_values: Sequence[float], y_values: Sequence[float], sizes: Sequence[float], *,
-    groups: Sequence | None = None, labels: Sequence | None = None,
+    groups: Sequence | None = None, highlight_group=None, labels: Sequence | None = None,
     annotate: Sequence | None = None, x_label=None, y_label=None,
     title=None, subtitle=None, size_label=None, x_tick_format=None,
     width=820, height=560, theme="light", max_radius=34,
@@ -246,7 +246,9 @@ def bubble_chart(
     ``x_tick_format`` is an optional callable ``value -> str`` for the x axis
     (e.g. ``str(int(v))`` for years, which should not be comma-grouped).
     ``annotate`` is a list of ``labels`` values whose bubbles are labeled
-    directly on the chart (in addition to the color legend).
+    directly on the chart. ``highlight_group`` switches to a *focus* palette:
+    the named group is drawn in the accent color and every other group recedes
+    to a neutral gray (highlighting one key pattern, and legible in black & white).
     """
     theme = get_theme(theme)
     if not (len(x_values) == len(y_values) == len(sizes)):
@@ -281,13 +283,25 @@ def bubble_chart(
         if left - 1 <= tx <= right + 1:
             svg.text(tx, bottom + 18, fmt_x(t), font_size=11, fill=theme.axis_label, text_anchor="middle")
 
+    focus = highlight_group is not None
     cmap = theme.color_map([g for g in groups if g is not None])
-    # Largest bubbles first so small ones stay clickable/visible on top.
-    order = sorted(range(len(x_values)), key=lambda i: sizes[i], reverse=True)
+
+    def bubble_color(g):
+        if focus:
+            return theme.accent if g == highlight_group else theme.muted
+        return cmap.get(g, theme.accent)
+
+    # Largest bubbles first so small ones stay visible on top. In focus mode,
+    # draw the muted group first so the accent bubbles sit above them.
+    idx = sorted(range(len(x_values)), key=lambda i: sizes[i], reverse=True)
+    if focus:
+        idx = [i for i in idx if groups[i] != highlight_group] + \
+              [i for i in idx if groups[i] == highlight_group]
+    order = idx
     for i in order:
-        color = cmap.get(groups[i], theme.accent)
+        color = bubble_color(groups[i])
         svg.circle(sx(x_values[i]), sy(y_values[i]), rad(sizes[i]), fill=color,
-                   fill_opacity=0.62, stroke=color, stroke_width=1.4)
+                   fill_opacity=0.6 if focus else 0.62, stroke=color, stroke_width=1.4)
     # Direct labels on notable bubbles (secondary encoding beyond color).
     for i in range(len(x_values)):
         if labels[i] in annotate_set:
@@ -295,7 +309,9 @@ def bubble_chart(
             svg.text(bx, by - rad(sizes[i]) - 6, str(labels[i]), font_size=11, font_weight="600",
                      fill=theme.text_primary, text_anchor="middle")
 
-    if any(g is not None for g in groups):
+    if focus:
+        _legend(svg, theme, [(highlight_group, theme.accent), ("other", theme.muted)], left, 78)
+    elif any(g is not None for g in groups):
         _legend(svg, theme, list(cmap.items()), left, 78)
     if x_label:
         svg.text((left + right) / 2, height - 14, x_label, font_size=12.5, fill=theme.text_secondary, text_anchor="middle")
@@ -312,25 +328,29 @@ def bubble_chart(
 
 def dumbbell_chart(
     categories: Sequence, low: Sequence[float], high: Sequence[float], *,
-    low_label="shortest", high_label="tallest", title=None, subtitle=None,
-    unit="", decimals=None, width=None, height=560, theme="light",
+    low_label="shortest", high_label="tallest", highlight=None, title=None, subtitle=None,
+    unit="", decimals=None, width=None, height=580, theme="light",
 ) -> SVG:
     """Vertical range chart where each connector is drawn as a *building*.
 
     The value axis runs vertically; each category is a column, and the range
     from ``low`` to ``high`` is rendered as a little windowed tower whose base
-    sits at the shortest value and whose roof reaches the tallest. Buildings are
-    colored per category from the palette.
+    sits at the shortest value and whose roof reaches the tallest. ``highlight``
+    (a category name or index) switches to a focus palette: that tower is drawn
+    in the accent color and the rest recede to a neutral gray; otherwise towers
+    are colored per category.
     """
     theme = get_theme(theme)
     if not (len(categories) == len(low) == len(high)):
         raise ValueError("categories, low and high must be the same length")
     n = len(categories)
+    hi_idx = _resolve_highlight(highlight, categories)
     left, right_pad, col_w = 66, 26, 132
     if width is None:
         width = left + right_pad + n * col_w
     top, bottom = 108, 62
-    plot_bottom, plot_top, plot_right = height - bottom, top, width - right_pad
+    # Extra headroom so the tallest tower's value label clears the caption.
+    plot_bottom, plot_top, plot_right = height - bottom, top + 28, width - right_pad
 
     svg = SVG(width, height, background=theme.surface, title=title or "Building range chart")
     _header(svg, theme, title, subtitle)
@@ -352,7 +372,8 @@ def dumbbell_chart(
         bw = min(78, band.bandwidth)
         x0 = cx - bw / 2
         yt, yb = y(hi), y(lo)
-        color = theme.color(i)
+        color = (theme.color(i) if hi_idx is None
+                 else theme.accent if i == hi_idx else theme.muted)
         # Tower body spanning the shortest -> tallest range.
         svg.rect(x0, yt, bw, max(1.0, yb - yt), rx=3, fill=color)
         # Window rows (thin surface-colored lines) and a central mullion.
@@ -413,7 +434,10 @@ def beeswarm_chart(
         py = _swarm_y(px, axis_y, placed, radius, step, top + 6, height - 52)
         placed.append((px, py))
         is_hi = labels[i] in hi_set
-        color = theme.accent if is_hi else cmap.get(groups[i], theme.accent)
+        # With no groups, dots are a single neutral hue (one accent for the
+        # highlighted few) -- one color to read in black & white.
+        base = cmap.get(groups[i]) if groups[i] is not None else theme.muted
+        color = theme.accent if is_hi else base
         svg.circle(px, py, radius + (1 if is_hi else 0), fill=color, fill_opacity=0.82,
                    stroke=theme.surface, stroke_width=1.2)
         if is_hi and labels[i] is not None:
