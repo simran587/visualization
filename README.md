@@ -38,16 +38,17 @@ zero, names read left to right, values are labeled directly.
 
 ![Horizontal bar chart of buildings per country, China highlighted](docs/charts/bar_by_country.png)
 
-### Bubble — year vs height, size = floors, colored by use type
-Each bubble is colored by use type, using a palette that avoids the red-green
-and yellow-blue colorblind-confusion pairs (blue / orange / teal / pink).
+### Bubble — year vs height, size = floors
+Mixed-use towers are highlighted in the accent color and everything else recedes
+to gray, so the finding ("the very tallest are almost all mixed-use") reads at a
+glance.
 
-![Bubble chart of year completed versus height, colored by use type](docs/charts/bubble_year_height.png)
+![Bubble chart of year completed versus height, mixed-use highlighted](docs/charts/bubble_year_height.png)
 
 ### Dumbbell — each country's shortest-to-tallest range
 A horizontal dumbbell: for each country a connector joins its shortest (open
-circle) and tallest (filled dot) building, colored per country. The UAE's
-dumbbell is the longest — the widest range.
+circle) and tallest (filled dot) building. The UAE — the widest range — is
+highlighted in the accent color and the rest recede to gray.
 
 ![Horizontal dumbbell chart of each country's shortest-to-tallest building range](docs/charts/dumbbell_country_range.png)
 
@@ -60,10 +61,9 @@ highlighted and named.
 > Every chart also supports `theme="dark"` (see the **Theming** section). These
 > images live in [`docs/charts/`](docs/charts) and are regenerated from the SVGs
 > produced by `python examples/gallery.py`. Charts are stripped to the
-> **finding** (title) plus the essentials. On the
-> [Data Visualization Checklist audit](docs/CHECKLIST_AUDIT.md) they score
-> 45–48/48; see it for the deliberate trade-offs (decluttered text on Bar/Range,
-> and the multi-color Bubble/Range palettes).
+> **finding** (title) plus the essentials, and each uses a one-accent focus
+> palette. On the [Data Visualization Checklist audit](docs/CHECKLIST_AUDIT.md)
+> four charts score **48/48**; only the Bar chart is a point short (no subtitle).
 
 ## Installation
 

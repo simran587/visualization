@@ -20,8 +20,8 @@ Charts audited (from `examples/gallery.py`): **Skyline**, **Bar**, **Bubble**,
 | **A9** | Graph is 2-D | 2 | 2 | 2 | 2 | 2 |
 | **A10** | Display is free from decoration | 2 | 2 | 2 | 2 | 2 |
 | **C11** | Color scheme is intentional | 2 | 2 | 2 | 2 | 2 |
-| **C12** | Color highlights the key pattern | 2 | 2 | **1** | **1** | 2 |
-| **C13** | Color is legible in black & white | 2 | 2 | **1** | **1** | 2 |
+| **C12** | Color highlights the key pattern | 2 | 2 | 2 | 2 | 2 |
+| **C13** | Color is legible in black & white | 2 | 2 | 2 | 2 | 2 |
 | **C14** | Color is legible for colorblindness | 2 | 2 | 2 | 2 | 2 |
 | **C15** | Text sufficiently contrasts background | 2 | 2 | 2 | 2 | 2 |
 | **L16** | Gridlines, if present, are muted | 2 | 2 | 2 | 2 | 2 |
@@ -33,25 +33,20 @@ Charts audited (from `examples/gallery.py`): **Skyline**, **Bar**, **Bubble**,
 | **O22** | Appropriate level of precision | 2 | 2 | 2 | 2 | 2 |
 | **O23** | Contextual / comparison data present | 2 | 2 | 2 | 2 | 2 |
 | **O24** | Elements reinforce the takeaway | 2 | 2 | 2 | 2 | 2 |
-| | **Score** | **48/48** | **47/48** | **46/48** | **46/48** | **48/48** |
+| | **Score** | **48/48** | **47/48** | **48/48** | **48/48** | **48/48** |
 
-## Two intentional trade-offs shape these scores
+## One remaining gap
 
-**1. Decluttered text (T2).** Per the "so what?" guideline (O20), the charts were
-stripped to the finding: each keeps only its takeaway **title** plus the
-essentials to read values (axis labels, value labels, legend). Subtitles and
-extra caption lines were removed. Because guideline **T2** specifically rewards a
-*subtitle or annotation*, the one chart that keeps neither — **Bar** — scores
-**T2 = 1**. The **Skyline** and **Range** keep a one-line subtitle, and the
-**Bubble** and **Beeswarm** charts keep direct callout labels (named buildings /
-outliers), so those four stay **T2 = 2**.
+**Bar — no subtitle (T2 = 1).** Per the "so what?" guideline (O20), the charts
+are stripped to the finding: each keeps its takeaway **title** plus the
+essentials to read values. The **Bar** chart is the only one with neither a
+subtitle nor a callout annotation, so it scores **T2 = 1**. Adding one line
+would make it 48/48 too.
 
-**2. Multi-color palettes (C12 / C13).** The **Bubble** and **Range** charts
-color **by category** (use type / country) to stay colorful, rather than the
-checklist's one-accent "focus" style. That costs each **C12** (highlight a single
-pattern) and **C13** (bright hues blur in black & white). The Bubble palette
-still **avoids the red-green and yellow-blue colorblind-confusion pairs** (blue /
-orange / teal / pink), so **C14 stays a 2**.
+Every other chart uses the checklist's **one-accent focus palette** — a single
+accent color highlights the key pattern (Burj Khalifa, China, mixed-use, the
+UAE, the two outliers) and the rest recede to neutral gray, so the emphasis is
+clear (**C12**) and legible in black & white (**C13**).
 
 ## Everything else is a 2
 
