@@ -340,8 +340,8 @@ def bubble_chart(
 
 def dumbbell_chart(
     categories: Sequence, low: Sequence[float], high: Sequence[float], *,
-    low_label="shortest", high_label="tallest", highlight=None, title=None, subtitle=None,
-    unit="", decimals=None, width=None, height=None, theme="light",
+    low_label="shortest", high_label="tallest", highlight=None, highlight_color=None,
+    title=None, subtitle=None, unit="", decimals=None, width=None, height=None, theme="light",
 ) -> SVG:
     """Horizontal dumbbell chart: for each category (a row), a connector line
     joins a ``low`` and a ``high`` value, with a dot at each end (an open circle
@@ -350,7 +350,9 @@ def dumbbell_chart(
     The value axis runs horizontally and category names read down the left.
     ``highlight`` (a category name or index) switches to a focus palette: that
     dumbbell is drawn in the accent color and the rest recede to a neutral gray;
-    otherwise dumbbells are colored per category.
+    otherwise dumbbells are colored per category. ``highlight_color`` overrides
+    the accent for the highlighted dumbbell (e.g. a maroon distinct from another
+    chart's accent).
     """
     theme = get_theme(theme)
     if not (len(categories) == len(low) == len(high)):
@@ -380,8 +382,9 @@ def dumbbell_chart(
     for i, (cat, lo, hi) in enumerate(zip(categories, low, high)):
         cy = band.center(i)
         xlo, xhi = x(lo), x(hi)
+        accent = highlight_color or theme.accent
         color = (theme.color(i) if hi_idx is None
-                 else theme.accent if i == hi_idx else theme.muted)
+                 else accent if i == hi_idx else theme.muted)
         # Dumbbell: connector with an open circle at the shortest and a filled
         # dot at the tallest.
         svg.line(xlo, cy, xhi, cy, stroke=color, stroke_width=3.5, stroke_linecap="round")

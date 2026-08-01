@@ -48,7 +48,8 @@ glance.
 ### Dumbbell — each country's shortest-to-tallest range
 A horizontal dumbbell: for each country a connector joins its shortest (open
 circle) and tallest (filled dot) building. The UAE — the widest range — is
-highlighted in the accent color and the rest recede to gray.
+highlighted in **maroon** (distinct from the skyline's accent) and the rest
+recede to gray.
 
 ![Horizontal dumbbell chart of each country's shortest-to-tallest building range](docs/charts/dumbbell_country_range.png)
 

@@ -62,7 +62,8 @@ def main(out_dir: Path) -> None:
     order = sorted(range(len(cats)), key=lambda i: hi[i], reverse=True)
     charts.append(("dumbbell_country_range", vc.dumbbell_chart(
         [cats[i] for i in order], [lo[i] for i in order], [hi[i] for i in order],
-        low_label="shortest", high_label="tallest", highlight="United Arab Emirates",
+        low_label="shortest", high_label="tallest",
+        highlight="United Arab Emirates", highlight_color="#8c1c2e",  # maroon
         title="The UAE spans the widest range of any country here",
         subtitle="Shortest (○) to tallest (●) building per country, in metres",
         unit=" m",
