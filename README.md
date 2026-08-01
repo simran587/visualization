@@ -135,7 +135,13 @@ structures:
 | `use_type` | `mixed-use` | categorical |
 
 The tiny `Dataset` helper covers what the charts need: `column`, `unique`,
-`filter`, `dropna`, `sort_by`, `top`, and `groups`.
+`filter`, `dropna`, `sort_by`, `top`, and `groups`. Preview it like a dataframe:
+
+```python
+data = vc.load_tallest_buildings()
+data.head()          # in Jupyter/Colab, renders the first 5 rows as a table
+print(data.preview(5))   # plain-text table for the console
+```
 
 ## More examples
 

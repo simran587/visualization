@@ -95,6 +95,38 @@ class Dataset:
     def __repr__(self):  # pragma: no cover
         return f"Dataset(rows={len(self.rows)}, columns={self.columns})"
 
+    def _repr_html_(self, max_rows: int = 50) -> str:
+        """Render as an HTML table so ``data.head()`` displays in Jupyter/Colab."""
+        from html import escape
+
+        def cell(v):
+            return "" if v is None else escape(str(v))
+
+        header = "".join(f"<th style='text-align:left;padding:3px 10px'>{escape(str(c))}</th>"
+                         for c in self.columns)
+        body = []
+        for r in self.rows[:max_rows]:
+            tds = "".join(f"<td style='padding:3px 10px'>{cell(r.get(c))}</td>" for c in self.columns)
+            body.append(f"<tr>{tds}</tr>")
+        more = ("" if len(self.rows) <= max_rows
+                else f"<div style='color:#888;font-size:12px;margin-top:4px'>… {len(self.rows) - max_rows} more rows</div>")
+        return (
+            "<table style='border-collapse:collapse;font-family:system-ui,sans-serif;font-size:13px'>"
+            f"<thead><tr style='border-bottom:1px solid #ccc'>{header}</tr></thead>"
+            f"<tbody>{''.join(body)}</tbody></table>{more}"
+        )
+
+    def preview(self, n: int = 5) -> str:
+        """A plain-text table of the first ``n`` rows (for the console)."""
+        rows = self.rows[:n]
+        widths = {c: max(len(str(c)), *(len(str(r.get(c, ""))) for r in rows)) if rows else len(str(c))
+                  for c in self.columns}
+        line = lambda vals: "  ".join(str(v).ljust(widths[c]) for c, v in zip(self.columns, vals))
+        out = [line(self.columns), line(["-" * widths[c] for c in self.columns])]
+        for r in rows:
+            out.append(line(["" if r.get(c) is None else r.get(c) for c in self.columns]))
+        return "\n".join(out)
+
 
 def load_tallest_buildings() -> Dataset:
     """Load the bundled ``tallest_buildings.csv`` (31 tallest structures).

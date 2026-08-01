@@ -40,6 +40,16 @@ def test_top_orders_and_limits():
     assert top3.column("height_m") == sorted(top3.column("height_m"), reverse=True)
 
 
+def test_head_and_preview():
+    data = vc.load_tallest_buildings()
+    head = data.head(5)
+    assert len(head) == 5
+    assert head.column("building")[0] == "Burj Khalifa"
+    # HTML table (for notebooks) and plain-text preview both include the data.
+    assert "<table" in head._repr_html_() and "Burj Khalifa" in head._repr_html_()
+    assert "Burj Khalifa" in data.preview(5) and "building" in data.preview(5)
+
+
 def test_groups_split():
     data = vc.load_tallest_buildings()
     g = data.groups("country")
