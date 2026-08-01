@@ -141,13 +141,15 @@ def radial_bar_chart(
     _header(svg, theme, title, subtitle)
 
     cx, cy = width / 2, height / 2 + 26
-    r_inner = min(width, height) * 0.14
+    # A small hub keeps the wedge lengths close to proportional-from-zero.
+    r_inner = min(width, height) * 0.06
     r_outer = min(width, height) * 0.40
     rscale = LinearScale(0, max(values) if values else 1, r_inner, r_outer)
 
-    # Reference rings at nice values.
+    # Reference rings at nice values (skip any above the tallest building).
+    vmax = max(values) if values else 1
     for t in rscale.ticks(4):
-        if t <= 0:
+        if t <= 0 or t > vmax:
             continue
         rr = rscale(t)
         svg.circle(cx, cy, rr, fill="none", stroke=theme.grid, stroke_width=1)
@@ -163,16 +165,21 @@ def radial_bar_chart(
         ro = rscale(value)
         color = theme.accent if (hi is None or i == hi) else theme.muted
         svg.path(_wedge(cx, cy, r_inner, ro, a0, a1), fill=color, stroke=theme.surface, stroke_width=1)
-        # Radial label just past the wedge, rotated to read outward.
         mid = (a0 + a1) / 2
-        lx, ly = _polar(cx, cy, ro + 12, mid)
         deg = math.degrees(mid)
         flip = 90 < (deg % 360) < 270
         rot = deg + 180 if flip else deg
         anchor = "end" if flip else "start"
+        # Name label just past the wedge, rotated to read outward.
+        lx, ly = _polar(cx, cy, ro + 12, mid)
         svg.text(lx, ly, str(label), font_size=10.5, fill=theme.text_secondary,
                  text_anchor=anchor, transform=f"rotate({rot:.1f} {lx:.1f} {ly:.1f})",
                  dominant_baseline="middle")
+        # Direct value label inside the wedge tip (so exact values are readable).
+        vx, vy = _polar(cx, cy, ro - 16, mid)
+        svg.text(vx, vy, f"{_format_number(value, decimals)}{unit}", font_size=9.5, font_weight="600",
+                 fill=theme.surface, text_anchor="middle",
+                 transform=f"rotate({rot:.1f} {vx:.1f} {vy:.1f})", dominant_baseline="middle")
 
     svg.circle(cx, cy, r_inner, fill=theme.surface, stroke=theme.axis, stroke_width=1)
     return svg
@@ -180,7 +187,8 @@ def radial_bar_chart(
 
 def bubble_chart(
     x_values: Sequence[float], y_values: Sequence[float], sizes: Sequence[float], *,
-    groups: Sequence | None = None, x_label=None, y_label=None,
+    groups: Sequence | None = None, labels: Sequence | None = None,
+    annotate: Sequence | None = None, x_label=None, y_label=None,
     title=None, subtitle=None, size_label=None, x_tick_format=None,
     width=820, height=560, theme="light", max_radius=34,
 ) -> SVG:
@@ -189,11 +197,15 @@ def bubble_chart(
 
     ``x_tick_format`` is an optional callable ``value -> str`` for the x axis
     (e.g. ``str(int(v))`` for years, which should not be comma-grouped).
+    ``annotate`` is a list of ``labels`` values whose bubbles are labeled
+    directly on the chart (in addition to the color legend).
     """
     theme = get_theme(theme)
     if not (len(x_values) == len(y_values) == len(sizes)):
         raise ValueError("x_values, y_values and sizes must be the same length")
     groups = list(groups) if groups is not None else [None] * len(x_values)
+    labels = list(labels) if labels is not None else [None] * len(x_values)
+    annotate_set = set(annotate or [])
     fmt_x = x_tick_format or _format_number
 
     top, left, right, bottom = 104, 66, width - 26, height - 58
@@ -228,6 +240,12 @@ def bubble_chart(
         color = cmap.get(groups[i], theme.accent)
         svg.circle(sx(x_values[i]), sy(y_values[i]), rad(sizes[i]), fill=color,
                    fill_opacity=0.62, stroke=color, stroke_width=1.4)
+    # Direct labels on notable bubbles (secondary encoding beyond color).
+    for i in range(len(x_values)):
+        if labels[i] in annotate_set:
+            bx, by = sx(x_values[i]), sy(y_values[i])
+            svg.text(bx, by - rad(sizes[i]) - 6, str(labels[i]), font_size=11, font_weight="600",
+                     fill=theme.text_primary, text_anchor="middle")
 
     if any(g is not None for g in groups):
         _legend(svg, theme, list(cmap.items()), left, 78)

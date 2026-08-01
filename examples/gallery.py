@@ -26,8 +26,8 @@ def main(out_dir: Path) -> None:
     top15 = data.top("height_m", 15)
     charts.append(("lollipop_tallest", vc.skyline_chart(
         top15.column("building"), top15.column("height_m"),
-        title="The 15 tallest buildings on Earth, to scale",
-        subtitle="Each drawn as its own silhouette · height in metres",
+        title="Burj Khalifa still towers far above the next tallest",
+        subtitle="The 15 tallest buildings, each drawn to scale as its own silhouette · metres",
         highlight="Burj Khalifa", unit=" m",
     )))
 
@@ -35,7 +35,8 @@ def main(out_dir: Path) -> None:
     top14 = data.top("height_m", 14)
     charts.append(("radial_tallest", vc.radial_bar_chart(
         top14.column("building"), top14.column("height_m"),
-        title="A skyline in the round", subtitle="14 tallest, height in metres",
+        title="Burj Khalifa outreaches the next thirteen giants",
+        subtitle="The 14 tallest buildings, height in metres, fanned around a dial",
         highlight="Burj Khalifa", unit=" m",
     )))
 
@@ -43,11 +44,12 @@ def main(out_dir: Path) -> None:
     b = data.dropna("floors")
     charts.append(("bubble_year_height", vc.bubble_chart(
         b.column("year_completed"), b.column("height_m"), b.column("floors"),
-        groups=b.column("use_type"),
+        groups=b.column("use_type"), labels=b.column("building"),
+        annotate=["Burj Khalifa", "Central Park Tower", "Willis Tower (Sears Tower)"],
         x_label="Year completed", y_label="Height (metres)", size_label="floors",
         x_tick_format=lambda v: str(int(v)),  # years, not comma-grouped
-        title="Taller, busier, and mostly built this century",
-        subtitle="Each bubble is a building; larger = more floors",
+        title="The tallest buildings are taller, busier, and newer",
+        subtitle="Each bubble is a building; larger = more floors · colored by use type",
     )))
 
     # 4. Dumbbell -- shortest-to-tallest range per country (>=2 buildings).
@@ -60,8 +62,8 @@ def main(out_dir: Path) -> None:
     charts.append(("dumbbell_country_range", vc.dumbbell_chart(
         [cats[i] for i in order], [lo[i] for i in order], [hi[i] for i in order],
         low_label="shortest", high_label="tallest",
-        title="How far apart are each country's giants?",
-        subtitle="Shortest to tallest building per country (metres)", unit=" m",
+        title="The UAE spans the widest range of any country here",
+        subtitle="Shortest to tallest building per country, in metres", unit=" m",
     )))
 
     # 5. Beeswarm -- the height distribution, tallest few named.

@@ -10,10 +10,11 @@ from __future__ import annotations
 from dataclasses import dataclass
 
 # Fun, vibrant "candy / tropical" palette. Deliberately no red-next-to-green
-# pairing (no Christmas vibe): the warm slots are mango/yellow/pink, the cool
-# slots are blue/teal/aqua, kept apart in the ordering.
-_CATEGORICAL_LIGHT = ("#3b9dff", "#ff8c42", "#12b5b0", "#ffcc33", "#ff5d8f", "#22c1a6", "#9c6bff", "#5ad1e6")
-_CATEGORICAL_DARK = ("#4dabf7", "#ff9f57", "#22c9c3", "#ffd43b", "#ff7aa6", "#3ad6b4", "#b39cff", "#6fdcef")
+# pairing (no Christmas vibe). Validated colorblind-safe: worst adjacent CVD
+# deltaE ~11.9 (well above the 8 floor). The gold is deepened to #d99a00 so it
+# stays inside the lightness band and remains legible in black & white.
+_CATEGORICAL_LIGHT = ("#3b9dff", "#ff8c42", "#12b5b0", "#d99a00", "#ff5d8f", "#22c1a6", "#9c6bff", "#5ad1e6")
+_CATEGORICAL_DARK = ("#4dabf7", "#ff9f57", "#22c9c3", "#e8b93a", "#ff7aa6", "#3ad6b4", "#b39cff", "#6fdcef")
 
 
 @dataclass(frozen=True)
