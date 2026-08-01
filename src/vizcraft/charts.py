@@ -366,9 +366,6 @@ def dumbbell_chart(
 
     svg = SVG(width, height, background=theme.surface, title=title or "Building range chart")
     _header(svg, theme, title, subtitle)
-    # Caption explaining the tower ends (keeps low_label/high_label meaningful).
-    svg.text(_TITLE_X, 82, f"each tower spans a country's {low_label} → {high_label} building",
-             font_size=12.5, fill=theme.axis_label, text_anchor="start")
 
     y = LinearScale(0, max(high) if high else 1, plot_bottom, plot_top)
     band = BandScale(range(n), left, plot_right, padding=0.34)

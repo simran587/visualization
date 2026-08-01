@@ -10,7 +10,7 @@ Charts audited (from `examples/gallery.py`): **Skyline**, **Bar**, **Bubble**,
 | # | Guideline | Skyline | Bar | Bubble | Range | Beeswarm |
 |---|-----------|:---:|:---:|:---:|:---:|:---:|
 | **T1** | Title is a 6–12 word descriptive takeaway, upper-left | 2 | 2 | 2 | 2 | 2 |
-| **T2** | Subtitle / annotations add information | 2 | 2 | 2 | 2 | 2 |
+| **T2** | Subtitle / annotations add information | **1** | **1** | 2 | **1** | 2 |
 | **T3** | Text size is hierarchical and readable | 2 | 2 | 2 | 2 | 2 |
 | **T4** | Data are labeled directly | 2 | 2 | 2 | 2 | 2 |
 | **T5** | Labels are used sparingly | 2 | 2 | 2 | 2 | 2 |
@@ -33,34 +33,39 @@ Charts audited (from `examples/gallery.py`): **Skyline**, **Bar**, **Bubble**,
 | **O22** | Appropriate level of precision | 2 | 2 | 2 | 2 | 2 |
 | **O23** | Contextual / comparison data present | 2 | 2 | 2 | 2 | 2 |
 | **O24** | Elements reinforce the takeaway | 2 | 2 | 2 | 2 | 2 |
-| | **Score** | **48/48** | **48/48** | **44/48** | **44/48** | **48/48** |
+| | **Score** | **47/48** | **47/48** | **46/48** | **45/48** | **48/48** |
 
-## The two 44/48 charts — a deliberate color choice
+## Two intentional trade-offs shape these scores
 
-The **Bubble** and **Range** charts color **by category** (use type / country) so
-the palette stays colorful, rather than the checklist's preferred one-accent
-"focus" style. That costs each of them **C12** (color highlighting a single key
-pattern) and **C13** (several equally-bright hues blur together in black &
-white). Both are mitigated by direct labels, but they are **1s, not 2s**, by
-design.
+**1. Decluttered text (T2).** Per the "so what?" guideline (O20), the charts were
+stripped to the finding: each keeps only its takeaway **title** plus the
+essentials to read values (axis labels, value labels, legend). Subtitles and
+extra caption lines were removed. Because guideline **T2** specifically rewards a
+*subtitle or annotation*, the charts that have no callout annotation — **Skyline,
+Bar, Range** — score **T2 = 1**. The **Bubble** and **Beeswarm** charts keep
+direct callout labels (named buildings / outliers), which count as annotations,
+so they stay **T2 = 2**.
 
-- The Bubble palette deliberately **avoids the red-green and yellow-blue
-  colorblind-confusion pairs** (blue / orange / teal / pink — no yellow beside
-  the blue, no red beside a green), so **C14 stays a 2**.
-- To make either a strict 48/48, switch it back to a focus palette (one accent +
-  gray) — at the cost of the multi-color look.
+**2. Multi-color palettes (C12 / C13).** The **Bubble** and **Range** charts
+color **by category** (use type / country) to stay colorful, rather than the
+checklist's one-accent "focus" style. That costs each **C12** (highlight a single
+pattern) and **C13** (bright hues blur in black & white). The Bubble palette
+still **avoids the red-green and yellow-blue colorblind-confusion pairs** (blue /
+orange / teal / pink), so **C14 stays a 2**.
 
-## The three 48/48 charts
+## Everything else is a 2
 
-Skyline, Bar, and Beeswarm each use one accent color over neutral grays — one
-clear emphasis (Burj Khalifa, China, the two outliers), legible in black & white
-— and meet every other guideline: takeaway titles, direct labels, zero
-baselines, ordered data, muted gridlines, no borders, colorblind-safety,
-appropriate precision, and comparison context.
+Across all five charts: takeaway titles, direct value labels, zero baselines,
+intentional ordering, equidistant axes, 2-D, no chartjunk, intentional and
+colorblind-safe color, high-contrast text, muted gridlines, no borders, no
+redundant ticks, single axis pair, a stated finding, appropriate chart type and
+precision, and comparison context.
 
 ## Notes
 
+- Want the Skyline/Bar/Range back to full marks? Re-adding a one-line subtitle
+  (or a single annotation callout) restores **T2 = 2** — a small amount of the
+  text that was just removed.
 - `radial_bar_chart` remains in the library for the circular look; it is not in
   the audited gallery because the radial form can't earn A6 (proportions) or O21
   (appropriate type).
-- The Range chart's tallest-tower value label was moved clear of the caption.

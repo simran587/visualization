@@ -92,10 +92,10 @@ def test_bubble_wellformed_and_legend():
 
 
 def test_dumbbell_wellformed():
-    svg = vc.dumbbell_chart(["China", "USA"], [300, 320], [632, 541], title="t", unit=" m",
-                            low_label="shortest", high_label="tallest")
+    svg = vc.dumbbell_chart(["China", "USA"], [300, 320], [632, 541], title="t", unit=" m")
     text = _wellformed(svg)
-    assert "shortest" in text and "tallest" in text
+    # Category names and the tallest value are labeled directly on the towers.
+    assert "China" in text and "632 m" in text
 
 
 def test_beeswarm_no_overlap():
