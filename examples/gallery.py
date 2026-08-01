@@ -63,7 +63,7 @@ def main(out_dir: Path) -> None:
     charts.append(("dumbbell_country_range", vc.dumbbell_chart(
         [cats[i] for i in order], [lo[i] for i in order], [hi[i] for i in order],
         low_label="shortest", high_label="tallest", highlight="United Arab Emirates",
-        title="How far apart are each country's giants?",
+        title="The UAE spans the widest range of any country here",
         subtitle="Shortest (○) to tallest (●) building per country, in metres",
         unit=" m",
     )))
