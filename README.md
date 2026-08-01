@@ -12,7 +12,7 @@ Chart types, **deliberately no pie, heatmap, or table**:
 | `skyline_chart` | a to-scale skyline where each value is its own recognizable building silhouette (also aliased `lollipop_chart`) |
 | `bar_chart` | a straight, checklist-ideal horizontal bar chart for ranked magnitude |
 | `bubble_chart` | three–four numerics at once: x, y, bubble size, and color |
-| `dumbbell_chart` | a low→high range per category, drawn as a windowed tower |
+| `dumbbell_chart` | a low→high range per category, as a dumbbell (two dots + connector) |
 | `beeswarm_chart` | a value distribution as non-overlapping dots |
 | `radial_bar_chart` | magnitude fanned around a circle (available, but see the checklist audit) |
 
@@ -44,11 +44,12 @@ and yellow-blue colorblind-confusion pairs (blue / orange / teal / pink).
 
 ![Bubble chart of year completed versus height, colored by use type](docs/charts/bubble_year_height.png)
 
-### Building range — each country's shortest-to-tallest, as towers
-The vertical axis is height; each connector is a windowed building spanning that
-country's shortest to tallest structure, colored per country.
+### Dumbbell — each country's shortest-to-tallest range
+A vertical dumbbell: for each country a connector joins its shortest (open
+circle) and tallest (filled dot) building, colored per country. The UAE's
+dumbbell is the longest — the widest range.
 
-![Vertical range chart where each country's height range is a windowed tower](docs/charts/dumbbell_country_range.png)
+![Vertical dumbbell chart of each country's shortest-to-tallest building range](docs/charts/dumbbell_country_range.png)
 
 ### Beeswarm — the height distribution, dot by dot
 One dot per building; the two outliers (Burj Khalifa, Merdeka 118) are

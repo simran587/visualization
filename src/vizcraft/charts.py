@@ -343,14 +343,14 @@ def dumbbell_chart(
     low_label="shortest", high_label="tallest", highlight=None, title=None, subtitle=None,
     unit="", decimals=None, width=None, height=580, theme="light",
 ) -> SVG:
-    """Vertical range chart where each connector is drawn as a *building*.
+    """Vertical dumbbell chart: for each category, a connector line joins a
+    ``low`` and a ``high`` value, with a dot at each end (an open circle for the
+    shortest, a filled dot for the tallest).
 
-    The value axis runs vertically; each category is a column, and the range
-    from ``low`` to ``high`` is rendered as a little windowed tower whose base
-    sits at the shortest value and whose roof reaches the tallest. ``highlight``
-    (a category name or index) switches to a focus palette: that tower is drawn
-    in the accent color and the rest recede to a neutral gray; otherwise towers
-    are colored per category.
+    The value axis runs vertically; each category is a column. ``highlight``
+    (a category name or index) switches to a focus palette: that dumbbell is
+    drawn in the accent color and the rest recede to a neutral gray; otherwise
+    dumbbells are colored per category.
     """
     theme = get_theme(theme)
     if not (len(categories) == len(low) == len(high)):
@@ -364,7 +364,7 @@ def dumbbell_chart(
     # Extra headroom so the tallest tower's value label clears the caption.
     plot_bottom, plot_top, plot_right = height - bottom, top + 28, width - right_pad
 
-    svg = SVG(width, height, background=theme.surface, title=title or "Building range chart")
+    svg = SVG(width, height, background=theme.surface, title=title or "Dumbbell chart")
     _header(svg, theme, title, subtitle)
 
     y = LinearScale(0, max(high) if high else 1, plot_bottom, plot_top)
@@ -378,27 +378,18 @@ def dumbbell_chart(
 
     for i, (cat, lo, hi) in enumerate(zip(categories, low, high)):
         cx = band.center(i)
-        bw = min(78, band.bandwidth)
-        x0 = cx - bw / 2
         yt, yb = y(hi), y(lo)
         color = (theme.color(i) if hi_idx is None
                  else theme.accent if i == hi_idx else theme.muted)
-        # Tower body spanning the shortest -> tallest range.
-        svg.rect(x0, yt, bw, max(1.0, yb - yt), rx=3, fill=color)
-        # Window rows (thin surface-colored lines) and a central mullion.
-        floor, yy = 10, yt + 9
-        while yy < yb - 2:
-            svg.line(x0 + 3, yy, x0 + bw - 3, yy, stroke=theme.surface, stroke_width=1, stroke_opacity=0.42)
-            yy += floor
-        if yb - yt > 14:
-            svg.line(cx, yt + 3, cx, yb - 3, stroke=theme.surface, stroke_width=1, stroke_opacity=0.32)
-        # Rooftop antenna and a peak marker at the tallest value.
-        svg.line(cx, yt, cx, yt - 13, stroke=color, stroke_width=2)
-        svg.circle(cx, yt - 13, 2.6, fill=color)
-        # Value labels: tallest above the roof, shortest at the base.
-        svg.text(cx, yt - 20, f"{_format_number(hi, decimals)}{unit}",
+        # Dumbbell: a connector between the shortest and tallest, with a dot at
+        # each end -- open circle for the shortest, filled for the tallest.
+        svg.line(cx, yb, cx, yt, stroke=color, stroke_width=3.5, stroke_linecap="round")
+        svg.circle(cx, yb, 7, fill=theme.surface, stroke=color, stroke_width=2.5)   # shortest
+        svg.circle(cx, yt, 7.5, fill=color, stroke=theme.surface, stroke_width=1.5)  # tallest
+        # Value labels: tallest above its dot, shortest below its dot.
+        svg.text(cx, yt - 14, f"{_format_number(hi, decimals)}{unit}",
                  font_size=11.5, font_weight="600", fill=theme.text_primary, text_anchor="middle")
-        svg.text(cx, yb + 15, f"{_format_number(lo, decimals)}{unit}",
+        svg.text(cx, yb + 22, f"{_format_number(lo, decimals)}{unit}",
                  font_size=10.5, fill=theme.text_secondary, text_anchor="middle")
         # Category (country) label under the ground axis.
         svg.text(cx, plot_bottom + 20, str(cat), font_size=12, fill=theme.text_secondary, text_anchor="middle")
