@@ -37,7 +37,7 @@ from .dataset import Dataset, load_tallest_buildings
 from .palette import DARK, LIGHT, Theme, get_theme
 from .svg import SVG
 
-__version__ = "0.1.0"
+__version__ = "0.1.1"
 
 __all__ = [
     "Dataset",
