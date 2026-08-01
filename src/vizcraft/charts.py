@@ -94,7 +94,7 @@ def skyline_chart(
             continue  # skip zero and any tick above the tallest building
         ty = y(t)
         svg.line(axis_left, ty, width - right_pad, ty, stroke=theme.grid, stroke_width=1)
-        svg.text(axis_left - 6, ty + 4, _format_number(t), font_size=10.5,
+        svg.text(axis_left - 6, ty + 4, _format_number(t), font_size=12,
                  fill=theme.axis_label, text_anchor="end")
 
     slate = theme.text_secondary
@@ -107,12 +107,12 @@ def skyline_chart(
             svg.raw(el)
         # Height label above each tower.
         svg.text(cx, ground_y - bh - 9, f"{_format_number(value, decimals)}{unit}",
-                 font_size=10, font_weight="600" if (hi is not None and i == hi) else "400",
+                 font_size=12, font_weight="600" if (hi is not None and i == hi) else "400",
                  fill=theme.text_primary if (hi is not None and i == hi) else theme.text_secondary,
                  text_anchor="middle")
         # Building name, rotated below the ground line.
         ny = ground_y + 12
-        svg.text(cx, ny, short_name(label), font_size=11, fill=theme.text_secondary,
+        svg.text(cx, ny, short_name(label), font_size=12, fill=theme.text_secondary,
                  text_anchor="end", transform=f"rotate(-90 {cx:.1f} {ny})")
 
     svg.line(axis_left, ground_y, width - right_pad, ground_y, stroke=theme.axis, stroke_width=2)
@@ -155,7 +155,7 @@ def bar_chart(
     for t in x.ticks(5):
         tx = x(t)
         svg.line(tx, top, tx, height - bottom_pad, stroke=theme.grid, stroke_width=1)
-        svg.text(tx, height - bottom_pad + 18, _format_number(t), font_size=11,
+        svg.text(tx, height - bottom_pad + 18, _format_number(t), font_size=12,
                  fill=theme.axis_label, text_anchor="middle")
 
     slate = theme.text_secondary
@@ -168,7 +168,7 @@ def bar_chart(
         svg.text(left - 10, by + band.bandwidth / 2 + 4, str(label),
                  font_size=12.5, fill=theme.text_secondary, text_anchor="end")
         svg.text(x(value) + 8, by + band.bandwidth / 2 + 4, f"{_format_number(value, decimals)}{unit}",
-                 font_size=11.5, font_weight="600", fill=theme.text_primary, text_anchor="start")
+                 font_size=12.5, font_weight="600", fill=theme.text_primary, text_anchor="start")
 
     svg.line(left, top, left, height - bottom_pad, stroke=theme.axis, stroke_width=1.5)
     return svg
@@ -203,7 +203,7 @@ def radial_bar_chart(
             continue
         rr = rscale(t)
         svg.circle(cx, cy, rr, fill="none", stroke=theme.grid, stroke_width=1)
-        svg.text(cx, cy - rr - 3, _format_number(t), font_size=10, fill=theme.axis_label, text_anchor="middle")
+        svg.text(cx, cy - rr - 3, _format_number(t), font_size=12, fill=theme.axis_label, text_anchor="middle")
 
     start = math.radians(start_deg)
     total = math.radians(sweep_deg)
@@ -222,12 +222,12 @@ def radial_bar_chart(
         anchor = "end" if flip else "start"
         # Name label just past the wedge, rotated to read outward.
         lx, ly = _polar(cx, cy, ro + 12, mid)
-        svg.text(lx, ly, str(label), font_size=10.5, fill=theme.text_secondary,
+        svg.text(lx, ly, str(label), font_size=12, fill=theme.text_secondary,
                  text_anchor=anchor, transform=f"rotate({rot:.1f} {lx:.1f} {ly:.1f})",
                  dominant_baseline="middle")
         # Direct value label inside the wedge tip (so exact values are readable).
         vx, vy = _polar(cx, cy, ro - 16, mid)
-        svg.text(vx, vy, f"{_format_number(value, decimals)}{unit}", font_size=9.5, font_weight="600",
+        svg.text(vx, vy, f"{_format_number(value, decimals)}{unit}", font_size=12, font_weight="600",
                  fill=theme.surface, text_anchor="middle",
                  transform=f"rotate({rot:.1f} {vx:.1f} {vy:.1f})", dominant_baseline="middle")
 
@@ -283,11 +283,11 @@ def bubble_chart(
         if ty < top - 1 or ty > bottom + 1:
             continue  # skip ticks that fall outside the plot area
         svg.line(left, ty, right, ty, stroke=theme.grid, stroke_width=1)
-        svg.text(left - 8, ty + 4, _format_number(t), font_size=11, fill=theme.axis_label, text_anchor="end")
+        svg.text(left - 8, ty + 4, _format_number(t), font_size=12, fill=theme.axis_label, text_anchor="end")
     for t in sx.ticks(6):
         tx = sx(t)
         if left - 1 <= tx <= right + 1:
-            svg.text(tx, bottom + 18, fmt_x(t), font_size=11, fill=theme.axis_label, text_anchor="middle")
+            svg.text(tx, bottom + 18, fmt_x(t), font_size=12, fill=theme.axis_label, text_anchor="middle")
 
     focus = highlight_group is not None
     group_keys = [g for g in groups if g is not None]
@@ -322,7 +322,7 @@ def bubble_chart(
     for i in range(len(x_values)):
         if labels[i] in annotate_set:
             bx, by = sx(x_values[i]), sy(y_values[i])
-            svg.text(bx, by - rad(sizes[i]) - 6, str(labels[i]), font_size=11, font_weight="600",
+            svg.text(bx, by - rad(sizes[i]) - 6, str(labels[i]), font_size=12, font_weight="600",
                      fill=theme.text_primary, text_anchor="middle")
 
     if focus:
@@ -336,7 +336,7 @@ def bubble_chart(
         svg.text(18, yc, y_label, font_size=12.5, fill=theme.text_secondary, text_anchor="middle",
                  transform=f"rotate(-90 18 {yc})")
     if size_label:
-        svg.text(right, 78, f"bubble size = {size_label}", font_size=11.5,
+        svg.text(right, 78, f"bubble size = {size_label}", font_size=12.5,
                  fill=theme.axis_label, text_anchor="end")
     svg.line(left, bottom, right, bottom, stroke=theme.axis, stroke_width=1.5)
     return svg
@@ -380,7 +380,7 @@ def dumbbell_chart(
     for t in x.ticks(5):
         tx = x(t)
         svg.line(tx, top, tx, height - bottom_pad, stroke=theme.grid, stroke_width=1)
-        svg.text(tx, height - bottom_pad + 18, _format_number(t), font_size=11,
+        svg.text(tx, height - bottom_pad + 18, _format_number(t), font_size=12,
                  fill=theme.axis_label, text_anchor="middle")
 
     for i, (cat, lo, hi) in enumerate(zip(categories, low, high)):
@@ -397,9 +397,9 @@ def dumbbell_chart(
         # Category name on the left; value labels just outside each dot.
         svg.text(left - 12, cy + 4, str(cat), font_size=12.5, fill=theme.text_secondary, text_anchor="end")
         svg.text(xlo - 11, cy + 4, f"{_format_number(lo, decimals)}{unit}",
-                 font_size=10.5, fill=theme.text_secondary, text_anchor="end")
+                 font_size=12, fill=theme.text_secondary, text_anchor="end")
         svg.text(xhi + 12, cy + 4, f"{_format_number(hi, decimals)}{unit}",
-                 font_size=11.5, font_weight="600", fill=theme.text_primary, text_anchor="start")
+                 font_size=12.5, font_weight="600", fill=theme.text_primary, text_anchor="start")
 
     svg.line(left, top, left, height - bottom_pad, stroke=theme.axis, stroke_width=1.5)
     return svg
@@ -430,7 +430,7 @@ def beeswarm_chart(
     for t in x.ticks(6):
         tx = x(t)
         svg.line(tx, top, tx, height - 40, stroke=theme.grid, stroke_width=1)
-        svg.text(tx, height - 22, _format_number(t), font_size=11, fill=theme.axis_label, text_anchor="middle")
+        svg.text(tx, height - 22, _format_number(t), font_size=12, fill=theme.axis_label, text_anchor="middle")
 
     cmap = theme.color_map([g for g in groups if g is not None])
     placed: list[tuple[float, float]] = []
@@ -448,7 +448,7 @@ def beeswarm_chart(
         svg.circle(px, py, radius + (1 if is_hi else 0), fill=color, fill_opacity=0.82,
                    stroke=theme.surface, stroke_width=1.2)
         if is_hi and labels[i] is not None:
-            svg.text(px, py - radius - 6, str(labels[i]), font_size=11, font_weight="600",
+            svg.text(px, py - radius - 6, str(labels[i]), font_size=12, font_weight="600",
                      fill=theme.text_primary, text_anchor="middle")
 
     if any(g is not None for g in groups):
