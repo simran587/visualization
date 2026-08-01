@@ -22,12 +22,13 @@ def main(out_dir: Path) -> None:
     data = vc.load_tallest_buildings()
     charts = []
 
-    # 1. Lollipop -- 15 tallest, Burj Khalifa highlighted.
+    # 1. Skyline -- 15 tallest as recognizable silhouettes, Burj Khalifa highlighted.
     top15 = data.top("height_m", 15)
-    charts.append(("lollipop_tallest", vc.lollipop_chart(
+    charts.append(("lollipop_tallest", vc.skyline_chart(
         top15.column("building"), top15.column("height_m"),
-        title="The 15 tallest buildings on Earth",
-        subtitle="Structural height in metres", highlight="Burj Khalifa", unit=" m",
+        title="The 15 tallest buildings on Earth, to scale",
+        subtitle="Each drawn as its own silhouette · height in metres",
+        highlight="Burj Khalifa", unit=" m",
     )))
 
     # 2. Radial bar -- top 14 fanned around a circle.
@@ -73,12 +74,12 @@ def main(out_dir: Path) -> None:
         subtitle="One dot per building, colored by use type",
     )))
 
-    # 6. Dark-mode lollipop.
-    charts.append(("lollipop_tallest_dark", vc.lollipop_chart(
+    # 6. Dark-mode skyline (night silhouettes).
+    charts.append(("lollipop_tallest_dark", vc.skyline_chart(
         top15.column("building"), top15.column("height_m"),
-        title="The 15 tallest buildings on Earth",
-        subtitle="Structural height in metres", highlight="Burj Khalifa",
-        unit=" m", theme="dark",
+        title="The 15 tallest buildings on Earth, at night",
+        subtitle="Each drawn as its own silhouette · height in metres",
+        highlight="Burj Khalifa", unit=" m", theme="dark",
     )))
 
     names = []

@@ -9,7 +9,7 @@ Five chart types, **deliberately no pie, heatmap, or table**:
 
 | Function | What it's for |
 |---|---|
-| `lollipop_chart` | ranked magnitude, each value drawn as a horizontal skyscraper |
+| `skyline_chart` | a to-scale skyline where each value is its own recognizable building silhouette (also aliased `lollipop_chart`) |
 | `radial_bar_chart` | magnitude fanned around a circle ("a skyline in the round") |
 | `bubble_chart` | three–four numerics at once: x, y, bubble size, and color |
 | `dumbbell_chart` | a low→high range per category, drawn as a windowed tower |
@@ -22,11 +22,13 @@ with **muted** gray for the rest, and works in `light` or `dark` themes.
 
 All rendered from the bundled `tallest_buildings.csv`.
 
-### Skyscrapers — the 15 tallest buildings
-Each value is drawn as a building laid on its side: a windowed tower growing
-from the baseline to its height, capped with a rooftop antenna.
+### Skyline — the 15 tallest buildings, to scale
+Each building stands on a ground line, scaled to its true height, and drawn as
+its **own recognizable silhouette**: Burj Khalifa's stepped taper and spire,
+Taipei 101's tiers, Shanghai Tower's twist, China Zun's waist, the Shanghai WFC
+aperture, the Abraj clock face, Central Park's pencil slab, and more.
 
-![The 15 tallest buildings, each drawn as a horizontal windowed tower](docs/charts/lollipop_tallest.png)
+![The 15 tallest buildings as recognizable to-scale silhouettes](docs/charts/lollipop_tallest.png)
 
 ### Radial bar — a skyline in the round
 ![Radial bar chart of the 14 tallest buildings](docs/charts/radial_tallest.png)
@@ -65,12 +67,12 @@ import vizcraft as vc
 data = vc.load_tallest_buildings()          # bundled dataset (31 buildings)
 top = data.top("height_m", 15)              # 15 tallest, ordered
 
-vc.lollipop_chart(
+vc.skyline_chart(
     top.column("building"), top.column("height_m"),
-    title="The 15 tallest buildings on Earth",
-    subtitle="Structural height in metres",
+    title="The 15 tallest buildings on Earth, to scale",
+    subtitle="Each drawn as its own silhouette",
     highlight="Burj Khalifa", unit=" m",
-).save("tallest.svg")
+).save("skyline.svg")
 ```
 
 Every chart function returns an `SVG` object with `.save(path)` and

@@ -48,10 +48,25 @@ def test_groups_split():
 
 
 # -- charts ----------------------------------------------------------------
-def test_lollipop_wellformed():
-    svg = vc.lollipop_chart(["A", "B", "C"], [300, 500, 400], title="t", highlight="B", unit=" m")
+def test_skyline_wellformed():
+    svg = vc.skyline_chart(["A", "B", "C"], [300, 500, 400], title="t", highlight="B", unit=" m")
     text = _wellformed(svg)
-    assert "300 m" in text and "<circle" in text and "<line" in text
+    assert "300 m" in text and "<path" in text  # silhouettes are paths
+
+
+def test_skyline_named_buildings_get_distinct_shapes():
+    data = vc.load_tallest_buildings()
+    top = data.top("height_m", 6)
+    svg = vc.skyline_chart(top.column("building"), top.column("height_m"), highlight="Burj Khalifa")
+    text = svg.to_string()
+    # Abraj Al-Bait contributes a clock face (circle); the WFC/others contribute paths.
+    assert text.count("<path") >= 6
+    # Short names appear on the axis.
+    assert "Burj Khalifa" in text and "Shanghai Tower" in text
+
+
+def test_lollipop_alias_points_to_skyline():
+    assert vc.lollipop_chart is vc.skyline_chart
 
 
 def test_radial_bar_wellformed():

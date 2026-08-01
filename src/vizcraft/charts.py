@@ -2,7 +2,8 @@
 
 Five non-standard chart types, each returning an :class:`~vizcraft.svg.SVG`:
 
-* :func:`lollipop_chart`  -- ranked magnitude, each value drawn as a building
+* :func:`skyline_chart`   -- a skyline of recognizable building silhouettes
+  (also exported as ``lollipop_chart``, the name it evolved from)
 * :func:`radial_bar_chart` -- magnitude fanned around a circle
 * :func:`bubble_chart`    -- three/four numerics at once (x, y, size, color)
 * :func:`dumbbell_chart`  -- a low->high range per category
@@ -18,6 +19,7 @@ from __future__ import annotations
 import math
 from typing import Mapping, Sequence
 
+from .buildings import draw_building, short_name
 from .palette import Theme, get_theme
 from .scales import BandScale, LinearScale
 from .svg import SVG
@@ -54,65 +56,72 @@ def _polar(cx, cy, r, angle):
 
 
 # ---------------------------------------------------------------------------
-def lollipop_chart(
+def skyline_chart(
     labels: Sequence, values: Sequence[float], *,
     title=None, subtitle=None, highlight=None, unit="", decimals=None,
-    width=780, height=None, theme="light",
+    width=None, height=680, theme="light",
 ) -> SVG:
-    """Horizontal building chart: each value is drawn as a skyscraper laid on
-    its side, growing from the baseline to its height and capped with a rooftop
-    antenna at the tip.
+    """A skyline: each value stands on a ground line as a recognizable building
+    silhouette, scaled to its true height (see :mod:`vizcraft.buildings`).
 
-    ``highlight`` (a label or index) colors one building in the accent and mutes
-    the rest; leave it ``None`` to draw them all in the accent color.
+    ``labels`` should be building names so each gets its own silhouette; unknown
+    names fall back to a generic tower. ``highlight`` (a name or index) paints
+    one building in the accent color and the rest in a neutral slate.
     """
     theme = get_theme(theme)
     if len(labels) != len(values):
         raise ValueError("labels and values must be the same length")
     n = len(labels)
-    top, bottom_pad, row_h = 74, 46, 32
-    if height is None:
-        height = top + n * row_h + bottom_pad
-    left = min(300, max(90, 8 * max((len(str(l)) for l in labels), default=8)))
-    right = width - 128  # room for the rooftop antenna + value label
-    hi = _resolve_highlight(highlight, labels)
+    col_w = 68
+    axis_left, right_pad = 52, 18
+    if width is None:
+        width = axis_left + right_pad + n * col_w
+    top, name_area = 84, 108
+    ground_y = height - name_area
+    plot_top = top + 34                    # headroom above the tallest for its label
 
-    svg = SVG(width, height, background=theme.surface, title=title or "Building chart")
+    svg = SVG(width, height, background=theme.surface, title=title or "Skyline")
     _header(svg, theme, title, subtitle)
 
-    x = LinearScale(0, max(values) if values else 1, left, right)
-    band = BandScale(range(n), top, height - bottom_pad, padding=0.32)
-    for t in x.ticks(5):
-        tx = x(t)
-        svg.line(tx, top, tx, height - bottom_pad, stroke=theme.grid, stroke_width=1)
-        svg.text(tx, height - bottom_pad + 18, _format_number(t), font_size=11,
-                 fill=theme.axis_label, text_anchor="middle")
+    hi = _resolve_highlight(highlight, labels)
+    vmax = max(values) if values else 1
+    y = LinearScale(0, vmax, ground_y, plot_top)          # value -> pixel (up)
+    band = BandScale(range(n), axis_left, width - right_pad, padding=0.12)
 
+    # Faint height reference lines with metre labels on the left.
+    for t in y.ticks(5):
+        if t <= 0 or t > vmax:
+            continue  # skip zero and any tick above the tallest building
+        ty = y(t)
+        svg.line(axis_left, ty, width - right_pad, ty, stroke=theme.grid, stroke_width=1)
+        svg.text(axis_left - 6, ty + 4, _format_number(t), font_size=10.5,
+                 fill=theme.axis_label, text_anchor="end")
+
+    slate = theme.text_secondary
     for i, (label, value) in enumerate(zip(labels, values)):
-        cy = band.center(i)
-        bh = min(22, band.bandwidth)
-        y0 = cy - bh / 2
-        xv = x(value)
-        color = theme.accent if (hi is None or i == hi) else theme.muted
-        # Building body from the baseline to the value.
-        svg.rect(left, y0, max(1.0, xv - left), bh, rx=2, fill=color)
-        # Window grid: vertical floor divisions + two horizontal window rows.
-        xx = left + 11
-        while xx < xv - 3:
-            svg.line(xx, y0 + 2, xx, y0 + bh - 2, stroke=theme.surface, stroke_width=1, stroke_opacity=0.42)
-            xx += 11
-        svg.line(left + 1, cy - bh / 6, xv - 2, cy - bh / 6, stroke=theme.surface, stroke_width=1, stroke_opacity=0.3)
-        svg.line(left + 1, cy + bh / 6, xv - 2, cy + bh / 6, stroke=theme.surface, stroke_width=1, stroke_opacity=0.3)
-        # Rooftop antenna at the tip (where the lollipop dot used to be).
-        svg.line(xv, cy, xv + 13, cy, stroke=color, stroke_width=2, stroke_linecap="round")
-        svg.circle(xv + 13, cy, 2.6, fill=color)
-        # Labels: building name at left, height just past the antenna.
-        svg.text(left - 10, cy + 4, str(label), font_size=12.5, fill=theme.text_secondary, text_anchor="end")
-        svg.text(xv + 22, cy + 4, f"{_format_number(value, decimals)}{unit}",
-                 font_size=11.5, font_weight="600", fill=theme.text_primary, text_anchor="start")
+        cx = band.center(i)
+        bw = band.bandwidth
+        bh = ground_y - y(value)
+        color = theme.accent if (hi is None or i == hi) else slate
+        for el in draw_building(label, cx, ground_y, bw, bh, color, theme.surface):
+            svg.raw(el)
+        # Height label above each tower.
+        svg.text(cx, ground_y - bh - 9, f"{_format_number(value, decimals)}{unit}",
+                 font_size=10, font_weight="600" if (hi is not None and i == hi) else "400",
+                 fill=theme.text_primary if (hi is not None and i == hi) else theme.text_secondary,
+                 text_anchor="middle")
+        # Building name, rotated below the ground line.
+        ny = ground_y + 12
+        svg.text(cx, ny, short_name(label), font_size=11, fill=theme.text_secondary,
+                 text_anchor="end", transform=f"rotate(-90 {cx:.1f} {ny})")
 
-    svg.line(left, top, left, height - bottom_pad, stroke=theme.axis, stroke_width=1.5)
+    svg.line(axis_left, ground_y, width - right_pad, ground_y, stroke=theme.axis, stroke_width=2)
     return svg
+
+
+# The skyline is the evolution of what began as the lollipop chart; keep the old
+# name working for callers that still use it.
+lollipop_chart = skyline_chart
 
 
 def radial_bar_chart(

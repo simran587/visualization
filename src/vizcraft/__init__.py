@@ -30,6 +30,7 @@ from .charts import (
     dumbbell_chart,
     lollipop_chart,
     radial_bar_chart,
+    skyline_chart,
 )
 from .dataset import Dataset, load_tallest_buildings
 from .palette import DARK, LIGHT, Theme, get_theme
@@ -40,6 +41,7 @@ __version__ = "0.1.0"
 __all__ = [
     "Dataset",
     "load_tallest_buildings",
+    "skyline_chart",
     "lollipop_chart",
     "radial_bar_chart",
     "bubble_chart",
