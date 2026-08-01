@@ -126,13 +126,14 @@ lollipop_chart = skyline_chart
 
 def bar_chart(
     labels: Sequence, values: Sequence[float], *,
-    title=None, subtitle=None, highlight=None, unit="", decimals=None,
+    title=None, subtitle=None, highlight=None, highlight_color=None, unit="", decimals=None,
     width=780, height=None, theme="light",
 ) -> SVG:
     """A straight horizontal bar chart -- the checklist-ideal form for ranked
     magnitude: bars start at zero (ruler-accurate), category names read left to
     right, values are labeled directly, and ``highlight`` paints one bar in the
-    accent while the rest recede to a neutral slate.
+    accent while the rest recede to a neutral slate. ``highlight_color`` overrides
+    the accent for the highlighted bar.
     """
     theme = get_theme(theme)
     if len(labels) != len(values):
@@ -158,10 +159,11 @@ def bar_chart(
                  fill=theme.axis_label, text_anchor="middle")
 
     slate = theme.text_secondary
+    accent = highlight_color or theme.accent
     for i, (label, value) in enumerate(zip(labels, values)):
         by = band.position(i)
         bw = max(1.0, x(value) - left)
-        color = theme.accent if (hi is None or i == hi) else slate
+        color = accent if (hi is None or i == hi) else slate
         svg.rect(left, by, bw, band.bandwidth, rx=3, fill=color)
         svg.text(left - 10, by + band.bandwidth / 2 + 4, str(label),
                  font_size=12.5, fill=theme.text_secondary, text_anchor="end")
@@ -235,8 +237,8 @@ def radial_bar_chart(
 
 def bubble_chart(
     x_values: Sequence[float], y_values: Sequence[float], sizes: Sequence[float], *,
-    groups: Sequence | None = None, highlight_group=None, group_palette=None,
-    labels: Sequence | None = None,
+    groups: Sequence | None = None, highlight_group=None, highlight_color=None,
+    group_palette=None, labels: Sequence | None = None,
     annotate: Sequence | None = None, x_label=None, y_label=None,
     title=None, subtitle=None, size_label=None, x_tick_format=None,
     width=820, height=560, theme="light", max_radius=34,
@@ -298,9 +300,11 @@ def bubble_chart(
     else:
         cmap = theme.color_map(group_keys)
 
+    accent = highlight_color or theme.accent
+
     def bubble_color(g):
         if focus:
-            return theme.accent if g == highlight_group else theme.muted
+            return accent if g == highlight_group else theme.muted
         return cmap.get(g, theme.accent)
 
     # Largest bubbles first so small ones stay visible on top. In focus mode,
@@ -322,7 +326,7 @@ def bubble_chart(
                      fill=theme.text_primary, text_anchor="middle")
 
     if focus:
-        _legend(svg, theme, [(highlight_group, theme.accent), ("other", theme.muted)], left, 78)
+        _legend(svg, theme, [(highlight_group, accent), ("other", theme.muted)], left, 78)
     elif any(g is not None for g in groups):
         _legend(svg, theme, list(cmap.items()), left, 78)
     if x_label:
@@ -404,7 +408,7 @@ def dumbbell_chart(
 def beeswarm_chart(
     values: Sequence[float], *, groups: Sequence | None = None,
     labels: Sequence | None = None, highlight_labels: Sequence | None = None,
-    x_label=None, title=None, subtitle=None, radius=6,
+    highlight_color=None, x_label=None, title=None, subtitle=None, radius=6,
     width=840, height=420, theme="light",
 ) -> SVG:
     """Beeswarm plot: every value is a dot placed along one axis, nudged
@@ -440,7 +444,7 @@ def beeswarm_chart(
         # With no groups, dots are a single neutral hue (one accent for the
         # highlighted few) -- one color to read in black & white.
         base = cmap.get(groups[i]) if groups[i] is not None else theme.muted
-        color = theme.accent if is_hi else base
+        color = (highlight_color or theme.accent) if is_hi else base
         svg.circle(px, py, radius + (1 if is_hi else 0), fill=color, fill_opacity=0.82,
                    stroke=theme.surface, stroke_width=1.2)
         if is_hi and labels[i] is not None:

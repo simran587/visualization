@@ -38,14 +38,14 @@ def main(out_dir: Path) -> None:
     charts.append(("bar_by_country", vc.bar_chart(
         [c for c, _ in counts], [n for _, n in counts],
         title="China holds more of the world's tallest than anywhere else",
-        highlight="China",
+        highlight="China", highlight_color="#0f9d8f",  # teal
     )))
 
     # 3. Bubble -- year vs height, size = floors; focus palette on mixed-use.
     b = data.dropna("floors")
     charts.append(("bubble_year_height", vc.bubble_chart(
         b.column("year_completed"), b.column("height_m"), b.column("floors"),
-        groups=b.column("use_type"), highlight_group="mixed-use",
+        groups=b.column("use_type"), highlight_group="mixed-use", highlight_color="#ea580c",  # orange
         labels=b.column("building"),
         annotate=["Burj Khalifa", "Central Park Tower", "Willis Tower (Sears Tower)"],
         x_label="Year completed", y_label="Height (metres)",
@@ -73,7 +73,7 @@ def main(out_dir: Path) -> None:
     charts.append(("beeswarm_heights", vc.beeswarm_chart(
         data.column("height_m"),
         labels=data.column("building"),
-        highlight_labels=["Burj Khalifa", "Merdeka 118"],
+        highlight_labels=["Burj Khalifa", "Merdeka 118"], highlight_color="#2563eb",  # blue
         x_label="Height (metres)",
         title="Most of these cluster between 300 and 550 metres",
     )))

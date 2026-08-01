@@ -16,8 +16,9 @@ Chart types, **deliberately no pie, heatmap, or table**:
 | `beeswarm_chart` | a value distribution as non-overlapping dots |
 | `radial_bar_chart` | magnitude fanned around a circle (available, but see the checklist audit) |
 
-Every chart uses a bright, fun palette, one **accent** color for emphasis
-with **muted** gray for the rest, and works in `light` or `dark` themes.
+Each chart highlights its key finding in **its own accent color** (skyline
+violet, bar teal, bubble orange, dumbbell maroon, beeswarm blue) with **muted**
+gray for the rest, and works in `light` or `dark` themes.
 
 ## Gallery
 
@@ -39,8 +40,8 @@ zero, names read left to right, values are labeled directly.
 ![Horizontal bar chart of buildings per country, China highlighted](docs/charts/bar_by_country.png)
 
 ### Bubble — year vs height, size = floors
-Mixed-use towers are highlighted in the accent color and everything else recedes
-to gray, so the finding ("the very tallest are almost all mixed-use") reads at a
+Mixed-use towers are highlighted in **orange** and everything else recedes to
+gray, so the finding ("the very tallest are almost all mixed-use") reads at a
 glance.
 
 ![Bubble chart of year completed versus height, mixed-use highlighted](docs/charts/bubble_year_height.png)
