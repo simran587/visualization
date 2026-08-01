@@ -27,6 +27,7 @@ def main(out_dir: Path) -> None:
     charts.append(("lollipop_tallest", vc.skyline_chart(
         top15.column("building"), top15.column("height_m"),
         title="Burj Khalifa still towers far above the next tallest",
+        subtitle="The 15 tallest buildings, each drawn to scale as its own silhouette · metres",
         highlight="Burj Khalifa", unit=" m",
     )))
 

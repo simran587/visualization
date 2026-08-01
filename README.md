@@ -58,11 +58,11 @@ highlighted and named.
 
 > Every chart also supports `theme="dark"` (see the **Theming** section). These
 > images live in [`docs/charts/`](docs/charts) and are regenerated from the SVGs
-> produced by `python examples/gallery.py`. Each chart is stripped to its
-> **finding** (title) plus the essentials — no subtitles or extra captions. On
-> the [Data Visualization Checklist audit](docs/CHECKLIST_AUDIT.md) they score
-> 45–48/48; see it for the two deliberate trade-offs (decluttered text, and the
-> multi-color Bubble/Range palettes).
+> produced by `python examples/gallery.py`. Charts are stripped to the
+> **finding** (title) plus the essentials. On the
+> [Data Visualization Checklist audit](docs/CHECKLIST_AUDIT.md) they score
+> 45–48/48; see it for the deliberate trade-offs (decluttered text on Bar/Range,
+> and the multi-color Bubble/Range palettes).
 
 ## Installation
 

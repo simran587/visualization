@@ -10,7 +10,7 @@ Charts audited (from `examples/gallery.py`): **Skyline**, **Bar**, **Bubble**,
 | # | Guideline | Skyline | Bar | Bubble | Range | Beeswarm |
 |---|-----------|:---:|:---:|:---:|:---:|:---:|
 | **T1** | Title is a 6–12 word descriptive takeaway, upper-left | 2 | 2 | 2 | 2 | 2 |
-| **T2** | Subtitle / annotations add information | **1** | **1** | 2 | **1** | 2 |
+| **T2** | Subtitle / annotations add information | 2 | **1** | 2 | **1** | 2 |
 | **T3** | Text size is hierarchical and readable | 2 | 2 | 2 | 2 | 2 |
 | **T4** | Data are labeled directly | 2 | 2 | 2 | 2 | 2 |
 | **T5** | Labels are used sparingly | 2 | 2 | 2 | 2 | 2 |
@@ -33,7 +33,7 @@ Charts audited (from `examples/gallery.py`): **Skyline**, **Bar**, **Bubble**,
 | **O22** | Appropriate level of precision | 2 | 2 | 2 | 2 | 2 |
 | **O23** | Contextual / comparison data present | 2 | 2 | 2 | 2 | 2 |
 | **O24** | Elements reinforce the takeaway | 2 | 2 | 2 | 2 | 2 |
-| | **Score** | **47/48** | **47/48** | **46/48** | **45/48** | **48/48** |
+| | **Score** | **48/48** | **47/48** | **46/48** | **45/48** | **48/48** |
 
 ## Two intentional trade-offs shape these scores
 
@@ -41,10 +41,10 @@ Charts audited (from `examples/gallery.py`): **Skyline**, **Bar**, **Bubble**,
 stripped to the finding: each keeps only its takeaway **title** plus the
 essentials to read values (axis labels, value labels, legend). Subtitles and
 extra caption lines were removed. Because guideline **T2** specifically rewards a
-*subtitle or annotation*, the charts that have no callout annotation — **Skyline,
-Bar, Range** — score **T2 = 1**. The **Bubble** and **Beeswarm** charts keep
-direct callout labels (named buildings / outliers), which count as annotations,
-so they stay **T2 = 2**.
+*subtitle or annotation*, the charts that keep neither — **Bar** and **Range** —
+score **T2 = 1**. The **Skyline** keeps a one-line subtitle, and the **Bubble**
+and **Beeswarm** charts keep direct callout labels (named buildings / outliers),
+so those three stay **T2 = 2**.
 
 **2. Multi-color palettes (C12 / C13).** The **Bubble** and **Range** charts
 color **by category** (use type / country) to stay colorful, rather than the
