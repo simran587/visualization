@@ -45,11 +45,11 @@ and yellow-blue colorblind-confusion pairs (blue / orange / teal / pink).
 ![Bubble chart of year completed versus height, colored by use type](docs/charts/bubble_year_height.png)
 
 ### Dumbbell — each country's shortest-to-tallest range
-A vertical dumbbell: for each country a connector joins its shortest (open
+A horizontal dumbbell: for each country a connector joins its shortest (open
 circle) and tallest (filled dot) building, colored per country. The UAE's
 dumbbell is the longest — the widest range.
 
-![Vertical dumbbell chart of each country's shortest-to-tallest building range](docs/charts/dumbbell_country_range.png)
+![Horizontal dumbbell chart of each country's shortest-to-tallest building range](docs/charts/dumbbell_country_range.png)
 
 ### Beeswarm — the height distribution, dot by dot
 One dot per building; the two outliers (Burj Khalifa, Merdeka 118) are

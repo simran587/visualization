@@ -67,6 +67,7 @@ def main(out_dir: Path) -> None:
         [cats[i] for i in order], [lo[i] for i in order], [hi[i] for i in order],
         low_label="shortest", high_label="tallest",
         title="How far apart are each country's giants?",
+        subtitle="Shortest (○) to tallest (●) building per country, in metres",
         unit=" m",
     )))
 

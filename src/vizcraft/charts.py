@@ -341,60 +341,60 @@ def bubble_chart(
 def dumbbell_chart(
     categories: Sequence, low: Sequence[float], high: Sequence[float], *,
     low_label="shortest", high_label="tallest", highlight=None, title=None, subtitle=None,
-    unit="", decimals=None, width=None, height=580, theme="light",
+    unit="", decimals=None, width=None, height=None, theme="light",
 ) -> SVG:
-    """Vertical dumbbell chart: for each category, a connector line joins a
-    ``low`` and a ``high`` value, with a dot at each end (an open circle for the
-    shortest, a filled dot for the tallest).
+    """Horizontal dumbbell chart: for each category (a row), a connector line
+    joins a ``low`` and a ``high`` value, with a dot at each end (an open circle
+    for the shortest, a filled dot for the tallest).
 
-    The value axis runs vertically; each category is a column. ``highlight``
-    (a category name or index) switches to a focus palette: that dumbbell is
-    drawn in the accent color and the rest recede to a neutral gray; otherwise
-    dumbbells are colored per category.
+    The value axis runs horizontally and category names read down the left.
+    ``highlight`` (a category name or index) switches to a focus palette: that
+    dumbbell is drawn in the accent color and the rest recede to a neutral gray;
+    otherwise dumbbells are colored per category.
     """
     theme = get_theme(theme)
     if not (len(categories) == len(low) == len(high)):
         raise ValueError("categories, low and high must be the same length")
     n = len(categories)
     hi_idx = _resolve_highlight(highlight, categories)
-    left, right_pad, col_w = 66, 26, 132
-    if width is None:
-        width = left + right_pad + n * col_w
-    top, bottom = 108, 62
-    # Extra headroom so the tallest tower's value label clears the caption.
-    plot_bottom, plot_top, plot_right = height - bottom, top + 28, width - right_pad
+    top, bottom_pad, row_h = 84, 48, 42
+    if height is None:
+        height = top + n * row_h + bottom_pad
+    left = min(300, max(90, 8 * max((len(str(c)) for c in categories), default=8)))
+    right = width if width is not None else 780
+    right = right - 96  # room for the tallest value label
+    plot_right = right
 
-    svg = SVG(width, height, background=theme.surface, title=title or "Dumbbell chart")
+    svg = SVG(width or 780, height, background=theme.surface, title=title or "Dumbbell chart")
     _header(svg, theme, title, subtitle)
 
-    y = LinearScale(0, max(high) if high else 1, plot_bottom, plot_top)
-    band = BandScale(range(n), left, plot_right, padding=0.34)
-    for t in y.ticks(5):
-        ty = y(t)
-        if ty < plot_top - 1 or ty > plot_bottom + 1:
-            continue  # skip ticks that fall outside the plot area
-        svg.line(left, ty, plot_right, ty, stroke=theme.grid, stroke_width=1)
-        svg.text(left - 10, ty + 4, _format_number(t), font_size=11, fill=theme.axis_label, text_anchor="end")
+    x = LinearScale(0, max(high) if high else 1, left, plot_right)
+    band = BandScale(range(n), top, height - bottom_pad, padding=0.5)
+    # Muted vertical gridlines with value ticks along the bottom.
+    for t in x.ticks(5):
+        tx = x(t)
+        svg.line(tx, top, tx, height - bottom_pad, stroke=theme.grid, stroke_width=1)
+        svg.text(tx, height - bottom_pad + 18, _format_number(t), font_size=11,
+                 fill=theme.axis_label, text_anchor="middle")
 
     for i, (cat, lo, hi) in enumerate(zip(categories, low, high)):
-        cx = band.center(i)
-        yt, yb = y(hi), y(lo)
+        cy = band.center(i)
+        xlo, xhi = x(lo), x(hi)
         color = (theme.color(i) if hi_idx is None
                  else theme.accent if i == hi_idx else theme.muted)
-        # Dumbbell: a connector between the shortest and tallest, with a dot at
-        # each end -- open circle for the shortest, filled for the tallest.
-        svg.line(cx, yb, cx, yt, stroke=color, stroke_width=3.5, stroke_linecap="round")
-        svg.circle(cx, yb, 7, fill=theme.surface, stroke=color, stroke_width=2.5)   # shortest
-        svg.circle(cx, yt, 7.5, fill=color, stroke=theme.surface, stroke_width=1.5)  # tallest
-        # Value labels: tallest above its dot, shortest below its dot.
-        svg.text(cx, yt - 14, f"{_format_number(hi, decimals)}{unit}",
-                 font_size=11.5, font_weight="600", fill=theme.text_primary, text_anchor="middle")
-        svg.text(cx, yb + 22, f"{_format_number(lo, decimals)}{unit}",
-                 font_size=10.5, fill=theme.text_secondary, text_anchor="middle")
-        # Category (country) label under the ground axis.
-        svg.text(cx, plot_bottom + 20, str(cat), font_size=12, fill=theme.text_secondary, text_anchor="middle")
+        # Dumbbell: connector with an open circle at the shortest and a filled
+        # dot at the tallest.
+        svg.line(xlo, cy, xhi, cy, stroke=color, stroke_width=3.5, stroke_linecap="round")
+        svg.circle(xlo, cy, 7, fill=theme.surface, stroke=color, stroke_width=2.5)     # shortest
+        svg.circle(xhi, cy, 7.5, fill=color, stroke=theme.surface, stroke_width=1.5)   # tallest
+        # Category name on the left; value labels just outside each dot.
+        svg.text(left - 12, cy + 4, str(cat), font_size=12.5, fill=theme.text_secondary, text_anchor="end")
+        svg.text(xlo - 11, cy + 4, f"{_format_number(lo, decimals)}{unit}",
+                 font_size=10.5, fill=theme.text_secondary, text_anchor="end")
+        svg.text(xhi + 12, cy + 4, f"{_format_number(hi, decimals)}{unit}",
+                 font_size=11.5, font_weight="600", fill=theme.text_primary, text_anchor="start")
 
-    svg.line(left, plot_bottom, plot_right, plot_bottom, stroke=theme.axis, stroke_width=1.5)
+    svg.line(left, top, left, height - bottom_pad, stroke=theme.axis, stroke_width=1.5)
     return svg
 
 
