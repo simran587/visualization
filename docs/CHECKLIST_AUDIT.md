@@ -20,8 +20,8 @@ Charts audited (from `examples/gallery.py`): **Skyline**, **Bar**, **Bubble**,
 | **A9** | Graph is 2-D | 2 | 2 | 2 | 2 | 2 |
 | **A10** | Display is free from decoration | 2 | 2 | 2 | 2 | 2 |
 | **C11** | Color scheme is intentional | 2 | 2 | 2 | 2 | 2 |
-| **C12** | Color highlights the key pattern | 2 | 2 | 2 | 2 | 2 |
-| **C13** | Color is legible in black & white | 2 | 2 | 2 | 2 | 2 |
+| **C12** | Color highlights the key pattern | 2 | 2 | **1** | **1** | 2 |
+| **C13** | Color is legible in black & white | 2 | 2 | **1** | **1** | 2 |
 | **C14** | Color is legible for colorblindness | 2 | 2 | 2 | 2 | 2 |
 | **C15** | Text sufficiently contrasts background | 2 | 2 | 2 | 2 | 2 |
 | **L16** | Gridlines, if present, are muted | 2 | 2 | 2 | 2 | 2 |
@@ -33,41 +33,34 @@ Charts audited (from `examples/gallery.py`): **Skyline**, **Bar**, **Bubble**,
 | **O22** | Appropriate level of precision | 2 | 2 | 2 | 2 | 2 |
 | **O23** | Contextual / comparison data present | 2 | 2 | 2 | 2 | 2 |
 | **O24** | Elements reinforce the takeaway | 2 | 2 | 2 | 2 | 2 |
-| | **Score** | **48/48** | **48/48** | **48/48** | **48/48** | **48/48** |
+| | **Score** | **48/48** | **48/48** | **44/48** | **44/48** | **48/48** |
 
-**All five charts score a full 48/48.**
+## The two 44/48 charts — a deliberate color choice
 
-## How each guideline is met
+The **Bubble** and **Range** charts color **by category** (use type / country) so
+the palette stays colorful, rather than the checklist's preferred one-accent
+"focus" style. That costs each of them **C12** (color highlighting a single key
+pattern) and **C13** (several equally-bright hues blur together in black &
+white). Both are mitigated by direct labels, but they are **1s, not 2s**, by
+design.
 
-- **Text (T1–T5).** Every title is a 6–12 word takeaway, left-justified in the
-  corner, over a supporting subtitle. Text sizes are hierarchical (title >
-  subtitle > labels). Data are labeled directly — bar/tower values, the two
-  beeswarm outliers, and notable bubbles — and labels are kept sparse.
-- **Arrangement (A6–A10).** Bars, towers and dots sit on a zero baseline so
-  lengths/positions are ruler-accurate; bubble *area* encodes floors. Data are
-  ordered by value, axis intervals are equidistant, every chart is 2-D, and
-  there is no chartjunk.
-- **Color (C11–C15).** Each chart uses a **focus palette**: one accent color
-  highlights the key pattern (Burj Khalifa, China, mixed-use, the UAE, the two
-  outliers) while everything else is a neutral gray — so the emphasis is clear
-  (C12) and the two tones stay distinct in black & white (C13). The palette is
-  validated colorblind-safe (C14), and all text is high-contrast (C15).
-- **Lines (L16–L19).** Gridlines are faint, there is no border, there are no
-  redundant tick marks, and no chart uses a second/dual axis.
-- **Overall (O20–O24).** Each title states the finding, the chart type suits the
-  data (ranked magnitude → bar / skyline; a relationship → bubble; a range →
-  towers; a distribution → beeswarm), precision is appropriate, and every chart
-  compares many buildings/countries so the numbers have context.
+- The Bubble palette deliberately **avoids the red-green and yellow-blue
+  colorblind-confusion pairs** (blue / orange / teal / pink — no yellow beside
+  the blue, no red beside a green), so **C14 stays a 2**.
+- To make either a strict 48/48, switch it back to a focus palette (one accent +
+  gray) — at the cost of the multi-color look.
 
-## What changed to get here
+## The three 48/48 charts
 
-- **Focus palette** on the Bubble, Range, and Beeswarm charts (one accent + gray)
-  — raises C12 and C13 from 1 → 2.
-- **Bar chart repurposed** to *buildings per country* (a different question from
-  the Skyline) with China highlighted.
-- **Radial dial replaced** by the straight bar earlier (radial couldn't earn A6
-  proportions or O21 type-appropriateness). `radial_bar_chart` remains in the
-  library for anyone who wants the circular look — it is simply not in the
-  audited gallery.
-- **Fixed** the Range chart's tallest-tower label overlapping the caption (added
-  headroom), and deepened the palette's gold so it stays legible.
+Skyline, Bar, and Beeswarm each use one accent color over neutral grays — one
+clear emphasis (Burj Khalifa, China, the two outliers), legible in black & white
+— and meet every other guideline: takeaway titles, direct labels, zero
+baselines, ordered data, muted gridlines, no borders, colorblind-safety,
+appropriate precision, and comparison context.
+
+## Notes
+
+- `radial_bar_chart` remains in the library for the circular look; it is not in
+  the audited gallery because the radial form can't earn A6 (proportions) or O21
+  (appropriate type).
+- The Range chart's tallest-tower value label was moved clear of the caption.

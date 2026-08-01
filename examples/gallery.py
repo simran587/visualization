@@ -42,16 +42,20 @@ def main(out_dir: Path) -> None:
         highlight="China",
     )))
 
-    # 3. Bubble -- year vs height, size = floors; focus on mixed-use towers.
+    # 3. Bubble -- year vs height, size = floors, colored by use type.
+    # Palette avoids the red-green and yellow-blue colorblind-confusion pairs
+    # (no yellow beside the blue; no red beside a green): blue, orange, teal, pink.
     b = data.dropna("floors")
     charts.append(("bubble_year_height", vc.bubble_chart(
         b.column("year_completed"), b.column("height_m"), b.column("floors"),
-        groups=b.column("use_type"), highlight_group="mixed-use", labels=b.column("building"),
+        groups=b.column("use_type"),
+        group_palette=["#3b9dff", "#ff8c42", "#12b5b0", "#ff5d8f"],
+        labels=b.column("building"),
         annotate=["Burj Khalifa", "Central Park Tower", "Willis Tower (Sears Tower)"],
         x_label="Year completed", y_label="Height (metres)", size_label="floors",
         x_tick_format=lambda v: str(int(v)),  # years, not comma-grouped
-        title="The very tallest towers are almost all mixed-use",
-        subtitle="Each bubble is a building; larger = more floors · mixed-use in purple",
+        title="The tallest buildings are taller, busier, and newer",
+        subtitle="Each bubble is a building; larger = more floors · colored by use type",
     )))
 
     # 4. Dumbbell -- shortest-to-tallest range per country; focus on the UAE.
@@ -63,7 +67,7 @@ def main(out_dir: Path) -> None:
     order = sorted(range(len(cats)), key=lambda i: hi[i], reverse=True)
     charts.append(("dumbbell_country_range", vc.dumbbell_chart(
         [cats[i] for i in order], [lo[i] for i in order], [hi[i] for i in order],
-        low_label="shortest", high_label="tallest", highlight="United Arab Emirates",
+        low_label="shortest", high_label="tallest",
         title="The UAE spans the widest range of any country here",
         subtitle="Shortest to tallest building per country, in metres", unit=" m",
     )))

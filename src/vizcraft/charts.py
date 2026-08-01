@@ -235,7 +235,8 @@ def radial_bar_chart(
 
 def bubble_chart(
     x_values: Sequence[float], y_values: Sequence[float], sizes: Sequence[float], *,
-    groups: Sequence | None = None, highlight_group=None, labels: Sequence | None = None,
+    groups: Sequence | None = None, highlight_group=None, group_palette=None,
+    labels: Sequence | None = None,
     annotate: Sequence | None = None, x_label=None, y_label=None,
     title=None, subtitle=None, size_label=None, x_tick_format=None,
     width=820, height=560, theme="light", max_radius=34,
@@ -249,6 +250,9 @@ def bubble_chart(
     directly on the chart. ``highlight_group`` switches to a *focus* palette:
     the named group is drawn in the accent color and every other group recedes
     to a neutral gray (highlighting one key pattern, and legible in black & white).
+    ``group_palette`` is an optional list of hex colors assigned to the groups
+    in first-seen order (overriding the theme's categorical palette) -- use it to
+    pick a colorblind-friendly set for the categories.
     """
     theme = get_theme(theme)
     if not (len(x_values) == len(y_values) == len(sizes)):
@@ -284,7 +288,15 @@ def bubble_chart(
             svg.text(tx, bottom + 18, fmt_x(t), font_size=11, fill=theme.axis_label, text_anchor="middle")
 
     focus = highlight_group is not None
-    cmap = theme.color_map([g for g in groups if g is not None])
+    group_keys = [g for g in groups if g is not None]
+    if group_palette:
+        cmap, gi = {}, 0
+        for g in group_keys:
+            if g not in cmap:
+                cmap[g] = group_palette[gi % len(group_palette)]
+                gi += 1
+    else:
+        cmap = theme.color_map(group_keys)
 
     def bubble_color(g):
         if focus:

@@ -38,16 +38,15 @@ zero, names read left to right, values are labeled directly.
 
 ![Horizontal bar chart of buildings per country, China highlighted](docs/charts/bar_by_country.png)
 
-### Bubble — year vs height, size = floors
-Mixed-use towers are highlighted in the accent color and everything else recedes
-to gray, so the pattern ("the very tallest are almost all mixed-use") reads at a
-glance.
+### Bubble — year vs height, size = floors, colored by use type
+Each bubble is colored by use type, using a palette that avoids the red-green
+and yellow-blue colorblind-confusion pairs (blue / orange / teal / pink).
 
-![Bubble chart of year completed versus height, mixed-use highlighted](docs/charts/bubble_year_height.png)
+![Bubble chart of year completed versus height, colored by use type](docs/charts/bubble_year_height.png)
 
 ### Building range — each country's shortest-to-tallest, as towers
 The vertical axis is height; each connector is a windowed building spanning that
-country's shortest to tallest structure. The UAE (the widest range) is highlighted.
+country's shortest to tallest structure, colored per country.
 
 ![Vertical range chart where each country's height range is a windowed tower](docs/charts/dumbbell_country_range.png)
 
@@ -59,8 +58,10 @@ highlighted and named.
 
 > Every chart also supports `theme="dark"` (see the **Theming** section). These
 > images live in [`docs/charts/`](docs/charts) and are regenerated from the SVGs
-> produced by `python examples/gallery.py`. All five score **48/48** on the
-> [Data Visualization Checklist audit](docs/CHECKLIST_AUDIT.md).
+> produced by `python examples/gallery.py`. On the
+> [Data Visualization Checklist audit](docs/CHECKLIST_AUDIT.md), Skyline, Bar,
+> and Beeswarm score **48/48**; Bubble and Range score **44/48** — trading two
+> Color guidelines for their multi-color palettes by choice.
 
 ## Installation
 
