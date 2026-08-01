@@ -65,10 +65,39 @@ highlighted and named.
 > palette. On the [Data Visualization Checklist audit](docs/CHECKLIST_AUDIT.md)
 > four charts score **48/48**; only the Bar chart is a point short (no subtitle).
 
+## Run it in Colab
+
+[![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/simran587/visualization/blob/claude/visualization-library-dataset-ei5m7t/examples/vizcraft_demo.ipynb)
+
+The notebook [`examples/vizcraft_demo.ipynb`](examples/vizcraft_demo.ipynb)
+`pip install`s vizcraft and renders the **Skyline** and **Dumbbell** charts
+inline. Open it in Colab (badge above) and choose **Runtime → Run all**.
+
 ## Installation
 
 ```bash
+# from a clone
 pip install -e .
+
+# or straight from GitHub (what the Colab notebook uses)
+pip install "git+https://github.com/simran587/visualization.git@claude/visualization-library-dataset-ei5m7t"
+```
+
+> If the repo is **private**, a Colab/`pip` install from GitHub needs a token:
+> `git+https://<TOKEN>@github.com/...` (or make the repo public).
+
+### Displaying a chart in a notebook
+
+```python
+import vizcraft as vc
+from IPython.display import SVG, display
+
+data = vc.load_tallest_buildings()
+top = data.top("height_m", 15)
+chart = vc.skyline_chart(top.column("building"), top.column("height_m"),
+                         highlight="Burj Khalifa", unit=" m",
+                         title="Burj Khalifa still towers far above the next tallest")
+display(SVG(chart.to_string()))   # renders inline in Jupyter / Colab
 ```
 
 ## Quick start
